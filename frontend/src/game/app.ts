@@ -40,14 +40,20 @@ export class EquilibriumEngineApp {
   ) {}
 
   async mount(): Promise<void> {
-    const auth = await this.rgs.authenticate();
-    this.betLevels = auth.config.betLevels;
-    this.balance = auth.balance.amount;
-    this.selectedBet = this.loadSavedBet();
-    this.renderShell();
-    this.updateDisplay();
-    this.bindEvents();
-    await this.resumeActiveRound(auth.round);
+    try {
+      const auth = await this.rgs.authenticate();
+      this.betLevels = auth.config.betLevels;
+      this.balance = auth.balance.amount;
+      this.selectedBet = this.loadSavedBet();
+      this.renderShell();
+      this.updateDisplay();
+      this.bindEvents();
+      await this.resumeActiveRound(auth.round);
+    } catch (error) {
+      this.busy = false;
+      this.showError(this.mapError(error));
+      this.updateDisplay();
+    }
   }
 
   private async resumeActiveRound(
@@ -57,12 +63,16 @@ export class EquilibriumEngineApp {
 
     this.busy = true;
     this.updateDisplay();
-    await this.replayRound(round.state);
-    this.lastBookState = round.state;
-    this.hasFinishedBook = true;
-    await this.rgs.endRound();
-    this.busy = false;
-    this.updateDisplay();
+    try {
+      await this.replayRound(round.state);
+      this.lastBookState = round.state;
+      this.hasFinishedBook = true;
+      const endResult = await this.rgs.endRound();
+      this.balance = endResult.balance.amount;
+    } finally {
+      this.busy = false;
+      this.updateDisplay();
+    }
   }
 
   private loadSavedBet(): number {
@@ -86,6 +96,7 @@ export class EquilibriumEngineApp {
         <select id="bet"></select>
         <button type="button" id="btn-play">Play</button>
         <div id="hint" aria-live="polite"></div>
+        <div id="error" aria-live="polite"></div>
         <div id="shelf-slot"></div>
         <div id="win" aria-live="polite"></div>
         <button type="button" id="btn-sound" aria-pressed="false">Sound</button>
@@ -196,17 +207,24 @@ export class EquilibriumEngineApp {
     this.pieces = [];
     this.totalWeight = 0;
     this.phase = 'playing';
+    this.clearError();
     this.updateDisplay();
 
-    const result = await this.rgs.play(this.selectedBet, 'base');
-    this.balance = result.balance.amount;
+    try {
+      const result = await this.rgs.play(this.selectedBet, 'base');
+      this.balance = result.balance.amount;
 
-    await this.replayRound(result.round.state);
-    this.lastBookState = result.round.state;
-    this.hasFinishedBook = true;
-    await this.rgs.endRound();
-    this.busy = false;
-    this.updateDisplay();
+      await this.replayRound(result.round.state);
+      this.lastBookState = result.round.state;
+      this.hasFinishedBook = true;
+      const endResult = await this.rgs.endRound();
+      this.balance = endResult.balance.amount;
+    } catch (error) {
+      this.showError(this.mapError(error));
+    } finally {
+      this.busy = false;
+      this.updateDisplay();
+    }
   }
 
   private async onReplayLast(): Promise<void> {
@@ -218,11 +236,17 @@ export class EquilibriumEngineApp {
     this.pieces = [];
     this.totalWeight = 0;
     this.phase = 'playing';
+    this.clearError();
     this.updateDisplay();
 
-    await this.replayRound(this.lastBookState);
-    this.busy = false;
-    this.updateDisplay();
+    try {
+      await this.replayRound(this.lastBookState);
+    } catch (error) {
+      this.showError(this.mapError(error));
+    } finally {
+      this.busy = false;
+      this.updateDisplay();
+    }
   }
 
   private async replayRound(events: BookEvent[]): Promise<void> {
@@ -246,11 +270,33 @@ export class EquilibriumEngineApp {
           this.updateDisplay();
         },
         finalWin: () => {
-          this.phase = 'win';
+          if (this.phase !== 'bust') {
+            this.phase = 'win';
+          }
           this.updateDisplay();
         },
       },
       this.delayMs,
     );
+  }
+
+  private showError(message: string): void {
+    const errorEl = this.root.querySelector('#error');
+    if (errorEl) errorEl.textContent = message;
+  }
+
+  private clearError(): void {
+    const errorEl = this.root.querySelector('#error');
+    if (errorEl) errorEl.textContent = '';
+  }
+
+  private mapError(error: unknown): string {
+    const text = error instanceof Error ? error.message : String(error);
+    if (/insufficient/i.test(text)) return 'Insufficient balance.';
+    if (/invalid session/i.test(text)) return 'Invalid session.';
+    if (error instanceof TypeError) {
+      return 'Network error. Please reload the game.';
+    }
+    return 'That action is not allowed right now.';
   }
 }

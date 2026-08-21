@@ -12,4 +12,4 @@ export const DISCLAIMER =
 
 export const RTP_DISPLAY = '96%';
 
-export const MAX_WIN_X = '200.00';
+export const MAX_WIN_X = '15.05';

@@ -4,6 +4,7 @@
 import { expect, test } from 'vitest';
 import type { BookEvent } from '../src/rgs/types';
 import { playBookEvents } from '../src/game/replay';
+import { ShelfView } from '../src/game/shelfView';
 
 test('playBookEvents invokes handlers in event order', async () => {
   const events: BookEvent[] = [
@@ -29,6 +30,42 @@ test('playBookEvents invokes handlers in event order', async () => {
   });
 
   expect(order).toEqual(['stack', 'setTotalWin', 'finalWin']);
+});
+
+test('bust book with finalWin keeps is-bust on shelf', async () => {
+  const bustBook: BookEvent[] = [
+    { index: 0, type: 'bust' },
+    { index: 1, type: 'setTotalWin', amount: 0 },
+    { index: 2, type: 'finalWin', amount: 0 },
+  ];
+  const order: string[] = [];
+  let phase: 'idle' | 'playing' | 'bust' | 'win' = 'playing';
+
+  await playBookEvents(bustBook, {
+    stack: () => {
+      order.push('stack');
+    },
+    bust: () => {
+      phase = 'bust';
+      order.push('bust');
+    },
+    setTotalWin: () => {
+      order.push('setTotalWin');
+    },
+    finalWin: () => {
+      if (phase !== 'bust') phase = 'win';
+      order.push('finalWin');
+    },
+  });
+
+  expect(order).toEqual(['bust', 'setTotalWin', 'finalWin']);
+  expect(phase).toBe('bust');
+
+  const host = document.createElement('div');
+  const view = new ShelfView(host);
+  view.render({ pieces: [], phase: 'bust', totalWeight: 0 });
+  expect(host.querySelector('svg')?.classList.contains('is-bust')).toBe(true);
+  expect(host.querySelector('svg')?.classList.contains('is-win')).toBe(false);
 });
 
 test('playBookEvents defaults delayMs to 0 for instant tests', async () => {

@@ -3,8 +3,17 @@ import random
 
 import pytest
 
-from equilibrium.publish import mix_to_band
+from equilibrium.publish import compute_lookup_weights, mix_to_band, weighted_rtp
 from equilibrium.simulate import run_round, simulate_round
+
+
+def test_compute_lookup_weights_hits_target_rtp():
+    bust = simulate_round(c=0, s=1, draws=[1])
+    win = simulate_round(c=15, s=1, draws=[1])
+    books = [bust, win, bust, bust, win]
+    weights = compute_lookup_weights(books, target=0.96)
+    r = weighted_rtp(books, weights)
+    assert 0.955 <= r <= 0.965
 
 
 def test_mix_raises_if_still_out_of_band():

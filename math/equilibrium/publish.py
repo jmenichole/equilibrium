@@ -9,6 +9,47 @@ from pathlib import Path
 from equilibrium.simulate import simulate_round
 
 
+def weighted_rtp(books: list[dict], weights: list[int]) -> float:
+    total = sum(weights)
+    if total == 0:
+        return 0.0
+    return sum(
+        weights[i] * books[i]["payoutMultiplier"] / 100 for i in range(len(books))
+    ) / total
+
+
+def compute_lookup_weights(
+    books: list[dict],
+    target: float = 0.96,
+    rng: random.Random | None = None,
+) -> list[int]:
+    if rng is None:
+        rng = random.Random(0)
+    weights = [1] * len(books)
+    bust_indices = [i for i, b in enumerate(books) if b["payoutMultiplier"] == 0]
+    win_indices = [i for i, b in enumerate(books) if b["payoutMultiplier"] > 0]
+    low, high = target - 0.005, target + 0.005
+    max_iters = max(len(books) * 1000, 1)
+
+    for _ in range(max_iters):
+        r = weighted_rtp(books, weights)
+        if low <= r <= high:
+            return weights
+        if r < low and win_indices:
+            weights[rng.choice(win_indices)] += 1
+        elif r > high and bust_indices:
+            weights[rng.choice(bust_indices)] += 1
+        else:
+            break
+
+    r = weighted_rtp(books, weights)
+    if not (low <= r <= high):
+        raise ValueError(
+            f"compute_lookup_weights could not reach RTP band [{low}, {high}]; final RTP={r:.6f}"
+        )
+    return weights
+
+
 def mix_to_band(books: list[dict], target: float = 0.96) -> list[dict]:
     r = sum(b["payoutMultiplier"] / 100 for b in books) / len(books)
     if 0.90 <= r <= 0.98:

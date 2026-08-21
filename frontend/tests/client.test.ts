@@ -89,6 +89,26 @@ test('createRgs strips trailing slash from rgsUrl', async () => {
   expect(playUrl).toBe('https://rgs.example/wallet/play');
 });
 
+test('createRgs prefixes bare host with https', async () => {
+  let playUrl = '';
+  vi.stubGlobal(
+    'fetch',
+    vi.fn(async (url: string) => {
+      playUrl = url;
+      return new Response(
+        JSON.stringify({
+          balance: { amount: 0 },
+          round: { active: true, state: [], payoutMultiplier: 0 },
+        }),
+        { status: 200 },
+      );
+    }),
+  );
+
+  await createRgs('rgs.example.com', 's').play(1_000_000, 'base');
+  expect(playUrl).toBe('https://rgs.example.com/wallet/play');
+});
+
 test('createRgsFromWindow defaults rgsUrl to location origin', () => {
   const original = window.location;
   Object.defineProperty(window, 'location', {

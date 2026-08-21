@@ -122,9 +122,12 @@ export function devRgs(options: {
     },
   };
 
-  const attachMiddleware = (
-    server: { middlewares: import('connect').Connect.Server },
-  ) => {
+  type Middleware = (req: any, res: any, next: () => void) => void;
+  type DevServer = {
+    middlewares: { use: (handler: Middleware) => void };
+  };
+
+  const attachMiddleware = (server: DevServer) => {
     ({ books, weights } = loadBooks(options.mathDir, fixturePath));
 
     server.middlewares.use(async (req, res, next) => {

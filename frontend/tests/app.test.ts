@@ -98,7 +98,7 @@ test('info panel lists rules, RTP, and max win', async () => {
   (document.getElementById('btn-info') as HTMLButtonElement).click();
   const panel = document.getElementById('info-panel');
   expect(panel?.textContent).toContain('96%');
-  expect(panel?.textContent).toContain('200.00');
+  expect(panel?.textContent).toContain('15.05');
   expect(panel?.textContent).toMatch(/bust/i);
 });
 

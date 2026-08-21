@@ -38,6 +38,24 @@ body {
   height: auto;
 }
 
+.equilibrium-shelf.is-bust {
+  opacity: 0.45;
+  transform: translateY(8px);
+}
+
+.equilibrium-shelf.is-win {
+  opacity: 1;
+}
+
+#error {
+  color: #e8a0a0;
+  font-size: 0.875rem;
+}
+
+#error:empty {
+  display: none;
+}
+
 #btn-sound.muted {
   opacity: 0.6;
 }

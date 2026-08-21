@@ -5,7 +5,7 @@ import argparse
 import random
 from pathlib import Path
 
-from equilibrium.publish import mix_to_band, write_library
+from equilibrium.publish import compute_lookup_weights, mix_to_band, write_library
 from equilibrium.simulate import run_round
 
 
@@ -18,7 +18,8 @@ def main() -> None:
     rng = random.Random(args.seed)
     books = [run_round(rng) for _ in range(args.count)]
     books = mix_to_band(books, target=0.96)
-    write_library(args.out, books)
+    weights = compute_lookup_weights(books, target=0.96)
+    write_library(args.out, books, weights)
 
 
 if __name__ == "__main__":

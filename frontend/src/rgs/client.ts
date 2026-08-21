@@ -46,8 +46,15 @@ async function postJson<T>(
   return response.json() as Promise<T>;
 }
 
+function normalizeRgsUrl(rgsUrl: string): string {
+  const trimmed = rgsUrl.replace(/\/$/, '');
+  if (!trimmed || trimmed.includes('://')) return trimmed;
+  const isLocal = /^(localhost|127\.0\.0\.1)(:|$)/i.test(trimmed);
+  return `${isLocal ? 'http' : 'https'}://${trimmed}`;
+}
+
 export function createRgs(rgsUrl: string, sessionID: string): RgsApi {
-  const baseUrl = rgsUrl.replace(/\/$/, '');
+  const baseUrl = normalizeRgsUrl(rgsUrl);
 
   return {
     authenticate: () => postJson(baseUrl, '/wallet/authenticate', sessionID),
