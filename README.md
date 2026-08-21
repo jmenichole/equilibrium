@@ -34,10 +34,17 @@ Static output goes to `dist/` for GitHub Pages.
 
 Math and frontend for the stateless Play-and-watch build:
 
+**Engine — math + frontend dev** (from repo root):
+
 ```bash
 cd math && python3 -m pytest
-python3 generate.py --count 100000 --out library
-cd ../frontend && npm install && npm test && npm run dev
+cd math && python3 generate.py --count 100000 --out library
+cd frontend && npm install && npm test && npm run dev
+```
+
+**Engine — frontend build for ACP** (from repo root):
+
+```bash
 cd frontend && npm run build   # dist/ for ACP
 ```
 
