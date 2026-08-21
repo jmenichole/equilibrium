@@ -3,6 +3,10 @@ name: pages
 on:
   push:
     branches: [main]
+  pull_request:
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
 permissions:
   contents: read
   pages: write
@@ -23,6 +27,7 @@ jobs:
         with:
           path: dist
   deploy:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: build
     runs-on: ubuntu-latest
     environment:

@@ -9,6 +9,7 @@ const MAX_WEIGHT = 15;
 export class ScaleView {
   private readonly platform: SVGGElement;
   private readonly stack: SVGGElement;
+  private lastPhase: ScalePhase = 'idle';
 
   constructor(host: HTMLElement) {
     host.innerHTML = `
@@ -30,9 +31,20 @@ export class ScaleView {
     this.platform.style.setProperty('--wobble', String(wobble));
 
     this.platform.classList.remove('bust', 'win');
-    if (s.phase === 'bust') this.platform.classList.add('bust');
-    if (s.phase === 'cashedOut') this.platform.classList.add('win');
+    if (s.phase === 'bust' && this.lastPhase !== 'bust') {
+      void this.platform.getBBox();
+      this.platform.classList.add('bust');
+    } else if (s.phase === 'bust') {
+      this.platform.classList.add('bust');
+    }
+    if (s.phase === 'cashedOut' && this.lastPhase !== 'cashedOut') {
+      void this.platform.getBBox();
+      this.platform.classList.add('win');
+    } else if (s.phase === 'cashedOut') {
+      this.platform.classList.add('win');
+    }
 
+    const scatter = s.phase === 'bust';
     this.stack.replaceChildren();
     for (let i = 0; i < s.weight; i++) {
       const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
@@ -43,7 +55,15 @@ export class ScaleView {
       rect.setAttribute('height', '12');
       rect.setAttribute('fill', '#d4af37');
       rect.setAttribute('rx', '2');
+      if (scatter) {
+        rect.classList.add('scatter');
+        rect.style.setProperty('--sx', `${(Math.random() - 0.5) * 80}px`);
+        rect.style.setProperty('--sy', `${20 + Math.random() * 60}px`);
+        rect.style.setProperty('--rot', `${(Math.random() - 0.5) * 90}deg`);
+      }
       this.stack.appendChild(rect);
     }
+
+    this.lastPhase = s.phase;
   }
 }

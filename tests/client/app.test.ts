@@ -38,7 +38,9 @@ test('after play, bet levels lock and cashout stays disabled until a survivor', 
   expect((document.getElementById('btn-cashout') as HTMLButtonElement).disabled).toBe(
     true,
   );
-  expect(betBtn.disabled).toBe(true);
+  document.querySelectorAll<HTMLButtonElement>('[data-bet]').forEach((btn) => {
+    expect(btn.disabled).toBe(true);
+  });
 });
 
 test('0% heavy is disabled when it cannot fit', async () => {
@@ -54,6 +56,32 @@ test('0% heavy is disabled when it cannot fit', async () => {
     await new Promise((r) => setTimeout(r, 0));
   }
   expect((document.getElementById('btn-heavy') as HTMLButtonElement).disabled).toBe(
+    true,
+  );
+});
+
+test('safe stack then cash out increases balance', async () => {
+  const app = new EquilibriumApp(
+    document.getElementById('app')!,
+    new LocalGameServer({ rollC: () => 15 }),
+  );
+  await app.mount();
+  const initialBalance = document.getElementById('balance')!.textContent;
+
+  (document.querySelector(`[data-bet="${BET_LEVELS[3]}"]`) as HTMLButtonElement).click();
+  await new Promise((r) => setTimeout(r, 0));
+
+  (document.getElementById('btn-safe') as HTMLButtonElement).click();
+  await new Promise((r) => setTimeout(r, 0));
+
+  const cashout = document.getElementById('btn-cashout') as HTMLButtonElement;
+  expect(cashout.disabled).toBe(false);
+
+  cashout.click();
+  await new Promise((r) => setTimeout(r, 0));
+
+  expect(document.getElementById('balance')!.textContent).not.toBe(initialBalance);
+  expect((document.getElementById('btn-cashout') as HTMLButtonElement).disabled).toBe(
     true,
   );
 });

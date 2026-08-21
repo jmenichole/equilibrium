@@ -99,6 +99,42 @@ button:not(:disabled):hover {
   height: auto;
 }
 
+#hud {
+  display: flex;
+  gap: 1.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+#multiplier {
+  color: var(--accent);
+}
+
+#multiplier.pulse {
+  animation: hud-multiplier-pulse 0.8s ease-out;
+}
+
+@keyframes hud-multiplier-pulse {
+  0% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  50% {
+    transform: scale(1.15);
+    filter: brightness(1.4);
+  }
+  100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+}
+
+#status {
+  margin: 0;
+  color: #e57373;
+  font-size: 0.9rem;
+}
+
 #scale-platform {
   transform-origin: 160px 187px;
   animation: scale-wobble 2s ease-in-out infinite;
@@ -115,12 +151,47 @@ button:not(:disabled):hover {
 }
 
 #scale-platform.bust {
-  animation: none;
-  transform: translateY(48px) rotate(12deg);
+  animation: platform-drop 0.6s ease-in forwards;
+}
+
+@keyframes platform-drop {
+  0% {
+    transform: translateY(0) rotate(0deg);
+  }
+  100% {
+    transform: translateY(48px) rotate(12deg);
+  }
 }
 
 #scale-platform.win {
-  filter: drop-shadow(0 0 8px var(--accent));
+  animation: platform-win 0.8s ease-out;
+}
+
+@keyframes platform-win {
+  0% {
+    filter: drop-shadow(0 0 4px var(--accent));
+  }
+  50% {
+    filter: drop-shadow(0 0 16px var(--accent));
+  }
+  100% {
+    filter: drop-shadow(0 0 8px var(--accent));
+  }
+}
+
+#scale-stack rect.scatter {
+  animation: block-scatter 0.5s ease-out forwards;
+}
+
+@keyframes block-scatter {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--sx, 20px), var(--sy, 40px)) rotate(var(--rot, 45deg));
+  }
 }
 
 footer#footer {

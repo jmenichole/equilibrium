@@ -65,8 +65,9 @@ test('RTP bounds for standard policies', async () => {
   );
   const mixed = await rtp(n, (q, placed) => {
     if (placed >= 3) return 'cash';
-    const live = q.find((x) => !x.disabled);
-    return live ? live.block : 'cash';
+    const enabled = q.filter((x) => !x.disabled);
+    if (enabled.length === 0) return 'cash';
+    return enabled[placed % enabled.length].block;
   });
   for (const r of [alwaysSafe, alwaysHeavy, mixed]) {
     expect(r).toBeLessThanOrEqual(1);

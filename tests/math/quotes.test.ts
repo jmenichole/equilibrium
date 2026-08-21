@@ -39,6 +39,18 @@ describe('remainCount / fitCount', () => {
     expect(remainCount(16)).toBe(0);
     expect(pSurvive(16, 1)).toBe(0);
   });
+
+  test('pSurvive equals fitCount/remainCount for x=0..15 and all block weights', () => {
+    const weights = [1, 3, 7];
+    for (let x = 0; x <= 15; x++) {
+      const remain = remainCount(x);
+      for (const w of weights) {
+        const fit = fitCount(x, w);
+        const expected = remain === 0 ? 0 : fit / remain;
+        expect(pSurvive(x, w)).toBe(expected);
+      }
+    }
+  });
 });
 
 test('buildQuotes at x=0 marks no block disabled except none', () => {
