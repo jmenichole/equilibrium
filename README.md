@@ -30,4 +30,6 @@ npm run build
 
 Static output goes to `dist/` for GitHub Pages.
 
+Human follow-ups the agent could not finish (enable Pages, live play-through, operator intros) are in [docs/MANUAL-TASKS.md](docs/MANUAL-TASKS.md).
+
 © 2026 jmenichole. See [LICENSE](LICENSE).
