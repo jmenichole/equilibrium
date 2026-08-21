@@ -32,8 +32,14 @@ Live demo: https://jmenichole.github.io/equilibrium/
 ### Later — operators
 
 - [ ] **Bink:** text the owner; ask for Cluster RGS docs / a sandbox session
-- [ ] **Stake Engine:** create an account, upload as a stateful original (`Play` → `DECISION` place → `EndRound`)
 - [ ] Written license if anyone ships it (`Copyright (c) 2026 jmenichole. All rights reserved.`)
+
+### Stake Engine (human)
+
+- [ ] Create a studio game on engine.stake.com
+- [ ] Upload math `publish_files` and frontend `dist/`
+- [ ] Tile in the Tile Editor (bright edges, no baked multipliers)
+- [ ] Request approval; do not promise listing
 
 ### Optional
 

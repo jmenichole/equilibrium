@@ -30,6 +30,17 @@ npm run build
 
 Static output goes to `dist/` for GitHub Pages.
 
+## Engine (Stake)
+
+Math and frontend for the stateless Play-and-watch build:
+
+```bash
+cd math && python3 -m pytest
+python3 generate.py --count 100000 --out library
+cd ../frontend && npm install && npm test && npm run dev
+cd frontend && npm run build   # dist/ for ACP
+```
+
 Human follow-ups the agent could not finish (enable Pages, live play-through, operator intros) are in [docs/MANUAL-TASKS.md](docs/MANUAL-TASKS.md).
 
 © 2026 jmenichole. See [LICENSE](LICENSE).

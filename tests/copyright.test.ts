@@ -9,13 +9,15 @@ import { expect, test } from 'vitest';
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const NOTICE = 'Copyright (c) 2026 jmenichole. All rights reserved.';
 
+const SKIP_DIRS = new Set(['node_modules', 'dist', '.git', 'library']);
+
 function walk(dir: string, acc: string[] = []): string[] {
   if (!statSync(dir, { throwIfNoEntry: false })) return acc;
   for (const name of readdirSync(dir)) {
-    if (name === 'node_modules' || name === 'dist' || name === '.git') continue;
+    if (SKIP_DIRS.has(name)) continue;
     const p = join(dir, name);
     if (statSync(p).isDirectory()) walk(p, acc);
-    else if (/\.(ts|css|html|yml)$/.test(name) || name === 'LICENSE') acc.push(p);
+    else if (/\.(ts|css|html|yml|py)$/.test(name) || name === 'LICENSE') acc.push(p);
   }
   return acc;
 }
@@ -26,6 +28,8 @@ test('LICENSE and all source/test files name jmenichole as copyright holder', ()
     ...walk(join(ROOT, 'src')),
     ...walk(join(ROOT, 'tests')),
     ...walk(join(ROOT, '.github')),
+    ...walk(join(ROOT, 'frontend')),
+    ...walk(join(ROOT, 'math')),
   ];
   const html = join(ROOT, 'index.html');
   try {
