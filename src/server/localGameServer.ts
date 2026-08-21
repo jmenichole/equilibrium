@@ -165,8 +165,13 @@ export class LocalGameServer implements GameServer {
     const round = this.internal;
     if (!round) return this.ok(null);
     if (!round.active) {
+      const snapshot = this.publicRound(round);
       this.internal = null;
-      return this.ok(null);
+      return {
+        status: { statusCode: 'SUCCESS' },
+        balance: { ...this.balance },
+        round: snapshot,
+      };
     }
     if (round.blocksPlaced < 1) return this.fail('ERR_GE');
     const payout = payoutAmount(round.amount, round.multiplierBps);
@@ -182,8 +187,13 @@ export class LocalGameServer implements GameServer {
       },
     ];
     this.balance.amount += payout;
+    const snapshot = this.publicRound(round);
     this.internal = null;
-    return this.ok(round);
+    return {
+      status: { statusCode: 'SUCCESS' },
+      balance: { ...this.balance },
+      round: snapshot,
+    };
   }
 
   async resetBalance() {
