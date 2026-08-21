@@ -17,6 +17,7 @@ A stranger can open a link, bet play money, mix Safe / Medium / Heavy blocks, an
 - Math is honest: no strategy has RTP > 1.00; cash-after-first-Medium lands about 96–98% RTP
 - Hidden `C` never appears in events, DOM, or logs; the UI cannot infer it from wobble
 - `GameServer` matches Stake Engine’s round shape so a later RGS adapter is a swap, not a rewrite
+- All source is copyrighted to **jmenichole** (see Copyright)
 
 **Out of scope**
 
@@ -131,7 +132,7 @@ Stake-originals layout, one screen, no lobby, desktop and phone.
 - **Bet:** `betLevels` `[0.10, 0.20, 0.50, 1, 2, 5, 10]` display units, disabled while `round.active`
 - **Center:** 2D SVG scale. Blocks lerp onto a single stack. No physics engine. Bust: platform drops, blocks scatter on a timeline, HUD `0.00x`. Cash-out: stack holds, multiplier pulses, balance ticks up
 - **Bottom:** three block buttons `SAFE  +1  → 1.12x  92%` (weight, next multiplier, survive %). Cash Out disabled until first survivor. `0%` blocks stay visible and disabled
-- **Footer:** “Pitch demo — not on Stake/Bink.”
+- **Footer:** “Pitch demo — not on Stake/Bink. © 2026 jmenichole.”
 - **One-line hint:** “Stack weight. Cash out before it breaks.”
 - **Theme:** charcoal, gold, one accent. Readable at arm’s length
 
@@ -181,6 +182,16 @@ No visual regression suite. No RGS mock. No provably-fair panel.
 
 Static host (GitHub Pages) from this repo. Single URL, no login. `LocalGameServer` ships in the JS bundle. This is **not tamper-proof**; it is shaped so a real host can be. Do not log `C` to the console. Do not put `C` in events or the DOM.
 
+## Copyright
+
+Holder: **jmenichole**. Year: 2026. All rights reserved (not an OSI license). Operators who want to ship the game need a written deal; this demo does not grant that.
+
+- Root `LICENSE` file with the notice
+- `package.json` `"license": "UNLICENSED"`, `"author": "jmenichole"`
+- Every source file (`.ts`, `.css`, `.html`, GitHub Actions YAML, tests) starts with `Copyright (c) 2026 jmenichole. All rights reserved.`
+- A test fails the build if any of those files lack that string
+- Do not copy third-party code in a way that would relicense the game
+
 ## Later (not this spec)
 
 1. HTTP `GameServer` with the same interface
@@ -200,3 +211,4 @@ Static host (GitHub Pages) from this repo. Single URL, no login. `LocalGameServe
 - Client now, `GameServer` boundary for later
 - Choreographed 2D original (not physics, not Crash-with-a-skin)
 - Stake-shaped API and integer money, no Stake SDK in the demo
+- Copyright (c) 2026 jmenichole. All rights reserved.
