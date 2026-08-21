@@ -25,6 +25,11 @@ type ActivePlay = {
   state: BookEvent[];
 };
 
+type StoredBook = {
+  id: string;
+  state: BookEvent[];
+};
+
 export function parseLookupWeights(csv: string): number[] {
   const lines = csv.trim().split(/\r?\n/);
   const header = lines[0]?.split(',') ?? [];
@@ -90,6 +95,8 @@ export function devRgs(options: {
   const fixturePath = options.fixturePath ?? DEFAULT_FIXTURE;
   let balance = STARTING_BALANCE;
   let activePlay: ActivePlay | null = null;
+  let lastCompletedBook: StoredBook | null = null;
+  let bookIdCounter = 0;
   let books: Book[] = [];
   let weights: number[] = [];
 
@@ -123,11 +130,22 @@ export function devRgs(options: {
     server.middlewares.use(async (req, res, next) => {
         const url = req.url ?? '';
         const path = url.split('?')[0] ?? '';
+        const query = new URLSearchParams(url.split('?')[1] ?? '');
 
         if (req.method === 'GET' && path === '/wallet/balance') {
           sendJson(res, 200, {
             balance: { amount: balance, currency: 'USD' },
           });
+          return;
+        }
+
+        if (req.method === 'GET' && path.startsWith('/bet/replay/')) {
+          const id = path.slice('/bet/replay/'.length);
+          if (lastCompletedBook && lastCompletedBook.id === id) {
+            sendJson(res, 200, { state: lastCompletedBook.state });
+            return;
+          }
+          sendJson(res, 404, { error: 'not found' });
           return;
         }
 
@@ -169,6 +187,26 @@ export function devRgs(options: {
               sendJson(res, 400, { error: 'invalid amount' });
               return;
             }
+
+            if (query.get('replayBook') === '1') {
+              const book =
+                books.find((entry) => entry.payoutMultiplier > 0) ?? books[0];
+              if (!book) {
+                sendJson(res, 500, { error: 'no books loaded' });
+                return;
+              }
+              const state = scaleBookForBet(book.events, amount);
+              sendJson(res, 200, {
+                balance: { amount: balance },
+                round: {
+                  active: true,
+                  state,
+                  payoutMultiplier: book.payoutMultiplier,
+                },
+              });
+              return;
+            }
+
             if (activePlay) {
               sendJson(res, 400, { error: 'round already active' });
               return;
@@ -205,6 +243,10 @@ export function devRgs(options: {
             if (credit > 0) {
               balance += credit;
             }
+            lastCompletedBook = {
+              id: String(++bookIdCounter),
+              state: activePlay.state,
+            };
             activePlay = null;
             sendJson(res, 200, {
               balance: { amount: balance },

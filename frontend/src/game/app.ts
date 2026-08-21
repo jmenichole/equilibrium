@@ -29,6 +29,8 @@ export class EquilibriumEngineApp {
   private phase: 'idle' | 'playing' | 'bust' | 'win' = 'idle';
   private hintText = '×1.00';
   private winText = '';
+  private lastBookState: BookEvent[] | null = null;
+  private hasFinishedBook = false;
   private bound = false;
 
   constructor(
@@ -45,6 +47,22 @@ export class EquilibriumEngineApp {
     this.renderShell();
     this.updateDisplay();
     this.bindEvents();
+    await this.resumeActiveRound(auth.round);
+  }
+
+  private async resumeActiveRound(
+    round: { active: boolean; state: BookEvent[] } | null,
+  ): Promise<void> {
+    if (!round?.active || round.state.length === 0) return;
+
+    this.busy = true;
+    this.updateDisplay();
+    await this.replayRound(round.state);
+    this.lastBookState = round.state;
+    this.hasFinishedBook = true;
+    await this.rgs.endRound();
+    this.busy = false;
+    this.updateDisplay();
   }
 
   private loadSavedBet(): number {
@@ -78,6 +96,7 @@ export class EquilibriumEngineApp {
           <p>RTP: ${RTP_DISPLAY}</p>
           <p>Max win: ×${MAX_WIN_X}</p>
           <p id="disclaimer"></p>
+          <button type="button" id="btn-replay" disabled>Replay last</button>
         </div>
         <footer>${COPYRIGHT_NOTICE}</footer>
       </main>
@@ -122,6 +141,9 @@ export class EquilibriumEngineApp {
     const infoPanel = this.root.querySelector('#info-panel') as HTMLElement | null;
     if (infoPanel) infoPanel.hidden = !this.infoOpen;
 
+    const replayBtn = this.root.querySelector('#btn-replay') as HTMLButtonElement | null;
+    if (replayBtn) replayBtn.disabled = this.busy || !this.hasFinishedBook;
+
     this.shelfView?.render({
       pieces: this.pieces,
       phase: this.phase,
@@ -154,6 +176,9 @@ export class EquilibriumEngineApp {
       this.updateDisplay();
     });
 
+    const replayBtn = this.root.querySelector('#btn-replay') as HTMLButtonElement;
+    replayBtn.addEventListener('click', () => void this.onReplayLast());
+
     document.addEventListener('keydown', (event) => {
       if (event.code !== 'Space' && event.key !== ' ') return;
       const btn = this.root.querySelector('#btn-play') as HTMLButtonElement | null;
@@ -177,7 +202,25 @@ export class EquilibriumEngineApp {
     this.balance = result.balance.amount;
 
     await this.replayRound(result.round.state);
+    this.lastBookState = result.round.state;
+    this.hasFinishedBook = true;
     await this.rgs.endRound();
+    this.busy = false;
+    this.updateDisplay();
+  }
+
+  private async onReplayLast(): Promise<void> {
+    if (this.busy || !this.lastBookState) return;
+
+    this.busy = true;
+    this.hintText = '×1.00';
+    this.winText = '';
+    this.pieces = [];
+    this.totalWeight = 0;
+    this.phase = 'playing';
+    this.updateDisplay();
+
+    await this.replayRound(this.lastBookState);
     this.busy = false;
     this.updateDisplay();
   }
