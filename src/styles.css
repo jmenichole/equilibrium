@@ -1,0 +1,101 @@
+/**
+ * Copyright (c) 2026 jmenichole. All rights reserved.
+ */
+
+:root {
+  --bg: #121212;
+  --accent: #d4af37;
+  --text: #e8e8e8;
+  --muted: #888;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, sans-serif;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 1rem;
+  gap: 1rem;
+}
+
+header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+#balance {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+#play-money {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+}
+
+#hint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+#bet-levels,
+#blocks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+button {
+  min-height: 48px;
+  min-width: 48px;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+button:not(:disabled):hover {
+  background: rgba(212, 175, 55, 0.15);
+}
+
+#scale-slot {
+  min-height: 120px;
+}
+
+footer#footer {
+  margin-top: auto;
+  padding-top: 1rem;
+  font-size: 0.75rem;
+  color: var(--muted);
+  text-align: center;
+}
