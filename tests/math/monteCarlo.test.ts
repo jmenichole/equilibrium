@@ -41,11 +41,22 @@ async function rtp(
   return returned / wagered;
 }
 
+async function cashAfterFirstMediumRtp(): Promise<number> {
+  const bet = BET_LEVELS[3];
+  let totalPayout = 0;
+  for (let C = 0; C < 16; C++) {
+    const s = new LocalGameServer({ rollC: () => C });
+    let res = await s.play(bet, 'BASE');
+    res = await s.action('DECISION', { type: 'place', block: 'medium' });
+    if (res.round.active) res = await s.endRound();
+    else res = await s.endRound();
+    totalPayout += res.round.payout;
+  }
+  return totalPayout / (16 * bet);
+}
+
 test('RTP bounds for standard policies', async () => {
   const n = 100_000;
-  const cashMedium = await rtp(n, (_q, placed) =>
-    placed >= 1 ? 'cash' : 'medium',
-  );
   const alwaysSafe = await rtp(n, (_q, placed) =>
     placed >= 1 ? 'cash' : 'safe',
   );
@@ -57,9 +68,13 @@ test('RTP bounds for standard policies', async () => {
     const live = q.find((x) => !x.disabled);
     return live ? live.block : 'cash';
   });
-  for (const r of [cashMedium, alwaysSafe, alwaysHeavy, mixed]) {
+  for (const r of [alwaysSafe, alwaysHeavy, mixed]) {
     expect(r).toBeLessThanOrEqual(1);
   }
+}, 120_000);
+
+test('cash-after-first-medium RTP over all C', async () => {
+  const cashMedium = await cashAfterFirstMediumRtp();
   expect(cashMedium).toBeGreaterThanOrEqual(0.96);
   expect(cashMedium).toBeLessThanOrEqual(0.98);
-}, 120_000);
+});
