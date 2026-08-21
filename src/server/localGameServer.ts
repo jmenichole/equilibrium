@@ -181,15 +181,9 @@ export class LocalGameServer implements GameServer {
         multiplierBps: round.multiplierBps,
       },
     ];
+    this.balance.amount += payout;
     this.internal = null;
-    return {
-      status: { statusCode: 'SUCCESS' },
-      balance: {
-        amount: this.balance.amount + payout,
-        currency: 'XSC',
-      },
-      round: this.publicRound(round),
-    };
+    return this.ok(round);
   }
 
   async resetBalance() {

@@ -40,9 +40,9 @@ describe('LocalGameServer', () => {
   });
 
   test('insufficient balance is ERR_IPB', async () => {
-    const s = new LocalGameServer({ rollC: () => 15 });
+    const s = new LocalGameServer({ rollC: () => 0 });
     await s.resetBalance();
-    // drain: 1000.00 starting; 10.00 bets
+    // drain: 1000.00 starting; 10.00 bets — every block busts, debit never returned
     for (let i = 0; i < 100; i++) {
       const r = await s.play(BET_LEVELS[6], 'BASE');
       if (r.status.statusCode !== 'SUCCESS') break;
