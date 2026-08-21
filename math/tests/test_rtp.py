@@ -1,8 +1,17 @@
 # Copyright (c) 2026 jmenichole. All rights reserved.
 import random
 
+import pytest
+
 from equilibrium.publish import mix_to_band
 from equilibrium.simulate import run_round, simulate_round
+
+
+def test_mix_raises_if_still_out_of_band():
+    # One extreme win needs ~100 busts to reach band; cap is len(books)*20 == 20.
+    books = [{"payoutMultiplier": 9900, "events": []}]
+    with pytest.raises(ValueError, match=r"final RTP="):
+        mix_to_band(books, target=0.96)
 
 
 def test_mix_pulls_all_wins_into_band():

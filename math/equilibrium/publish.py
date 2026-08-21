@@ -13,7 +13,7 @@ def mix_to_band(books: list[dict], target: float = 0.96) -> list[dict]:
     r = sum(b["payoutMultiplier"] / 100 for b in books) / len(books)
     if 0.90 <= r <= 0.98:
         return books
-    # Duplicate random busts or wins until mean in band (cap 20 passes)
+    # Duplicate random busts or wins until mean in band (cap len(books) * 20 extra appends)
     rng = random.Random(0)
     busts = [b for b in books if b["payoutMultiplier"] == 0]
     wins = [b for b in books if b["payoutMultiplier"] > 0]
@@ -33,6 +33,9 @@ def mix_to_band(books: list[dict], target: float = 0.96) -> list[dict]:
             out.append(rng.choice(wins))
         else:
             break
+    r = sum(b["payoutMultiplier"] / 100 for b in out) / len(out)
+    if not (0.90 <= r <= 0.98):
+        raise ValueError(f"mix_to_band could not reach RTP band [0.90, 0.98]; final RTP={r:.6f}")
     return out
 
 
