@@ -38,14 +38,14 @@ Math and frontend for the stateless Play-and-watch build:
 
 ```bash
 cd math && python3 -m pytest
-cd math && python3 generate.py --count 100000 --out library
-cd frontend && npm install && npm test && npm run dev
+python3 generate.py --count 100000 --out library
+cd ../frontend && npm install && npm test && npm run dev
 ```
 
 **Engine — frontend build for ACP** (from repo root):
 
 ```bash
-cd frontend && npm run build   # dist/ for ACP
+cd frontend && npm run build
 ```
 
 Human follow-ups the agent could not finish (enable Pages, live play-through, operator intros) are in [docs/MANUAL-TASKS.md](docs/MANUAL-TASKS.md).

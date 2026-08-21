@@ -10,8 +10,9 @@ cd math && python3 -m pytest
 
 ## Generate library
 
+From repo root, after `cd math && python3 -m pytest` leaves you in `math/`:
+
 ```bash
-cd math
 python3 generate.py --count 100000 --out library
 ```
 
@@ -24,7 +25,7 @@ Official `publish_files` (zstd) come from the [Stake Engine math-sdk](https://gi
 Upload to [engine.stake.com](https://engine.stake.com) is manual: math `publish_files` plus frontend `dist/` from:
 
 ```bash
-cd frontend && npm run build   # dist/ for ACP
+cd frontend && npm run build
 ```
 
 (from repo root). See [docs/MANUAL-TASKS.md](../docs/MANUAL-TASKS.md).
