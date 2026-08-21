@@ -2,7 +2,12 @@
  * Copyright (c) 2026 jmenichole. All rights reserved.
  */
 import { describe, expect, test } from 'vitest';
-import { fitCount, pSurvive, remainCount } from '../../src/math/quotes';
+import {
+  buildQuotes,
+  fitCount,
+  pSurvive,
+  remainCount,
+} from '../../src/math/quotes';
 
 describe('remainCount / fitCount', () => {
   test('at weight 0, 16 possible C values (0..15)', () => {
@@ -34,4 +39,17 @@ describe('remainCount / fitCount', () => {
     expect(remainCount(16)).toBe(0);
     expect(pSurvive(16, 1)).toBe(0);
   });
+});
+
+test('buildQuotes at x=0 marks no block disabled except none', () => {
+  const quotes = buildQuotes(0, 10_000);
+  expect(quotes.map((q) => q.block)).toEqual(['safe', 'medium', 'heavy']);
+  expect(quotes.every((q) => q.disabled === false)).toBe(true);
+  expect(quotes.find((q) => q.block === 'medium')?.pSurvive).toBe(13 / 16);
+});
+
+test('buildQuotes disables Heavy at x=10', () => {
+  const quotes = buildQuotes(10, 10_000);
+  expect(quotes.find((q) => q.block === 'heavy')?.disabled).toBe(true);
+  expect(quotes.find((q) => q.block === 'heavy')?.nextMultiplierBps).toBe(0);
 });
