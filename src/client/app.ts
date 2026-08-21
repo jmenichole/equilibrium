@@ -6,6 +6,7 @@ import { displayMultiplier } from '../math/multiplier';
 import type { Quote } from '../math/quotes';
 import type { GameServer, Round } from '../server/types';
 import { formatAmount } from './format';
+import { ScaleView, type ScalePhase } from './scaleView';
 
 export class EquilibriumApp {
   private busy = false;
@@ -23,6 +24,17 @@ export class EquilibriumApp {
     this.round = auth.round;
     this.render(auth.balance.amount);
     this.bind();
+  }
+
+  private scalePhase(): ScalePhase {
+    const state = this.round?.state ?? [];
+    for (let i = state.length - 1; i >= 0; i--) {
+      const e = state[i];
+      if (e.type === 'bust') return 'bust';
+      if (e.type === 'cashedOut') return 'cashedOut';
+    }
+    if (this.round?.active) return 'playing';
+    return 'idle';
   }
 
   private quotes(): Quote[] {
@@ -77,6 +89,13 @@ export class EquilibriumApp {
       </div>
       <footer id="footer">Pitch demo — not on Stake/Bink. © 2026 jmenichole.</footer>
     `;
+    const slot = this.root.querySelector('#scale-slot');
+    if (slot) {
+      new ScaleView(slot as HTMLElement).setState({
+        weight: this.round?.weight ?? 0,
+        phase: this.scalePhase(),
+      });
+    }
     this.bind();
   }
 
