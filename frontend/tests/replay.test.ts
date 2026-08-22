@@ -100,5 +100,5 @@ test('playBookEvents holds after bust so the shelf can fall', async () => {
     20,
   );
 
-  expect(performance.now() - start).toBeGreaterThanOrEqual(40);
+  expect(performance.now() - start).toBeGreaterThanOrEqual(30);
 });

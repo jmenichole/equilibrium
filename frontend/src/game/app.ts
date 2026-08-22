@@ -9,6 +9,12 @@ import {
 } from '../constants';
 import type { RgsApi } from '../rgs/client';
 import { displayPayoutX, formatRgsAmount } from '../rgs/display';
+import {
+  isNoActiveRoundError,
+  isStuckRoundError,
+  rgsErrorText,
+} from '../rgs/errors';
+import { readRoundState } from '../rgs/round';
 import type { BookEvent } from '../rgs/types';
 import { playBookEvents } from './replay';
 import { ShelfView } from './shelfView';
@@ -58,16 +64,16 @@ export class EquilibriumEngineApp {
   private async resumeActiveRound(
     round: { active: boolean; state: BookEvent[] } | null,
   ): Promise<void> {
-    if (!round?.active || round.state.length === 0) return;
+    const state = readRoundState(round);
+    if (!round?.active || state.length === 0) return;
 
     this.busy = true;
     this.updateDisplay();
     try {
-      await this.replayRound(round.state);
-      this.lastBookState = round.state;
+      await this.replayRound(state);
+      this.lastBookState = state;
       this.hasFinishedBook = true;
-      const endResult = await this.rgs.endRound();
-      this.balance = endResult.balance.amount;
+      await this.closeRoundIfNeeded(true);
     } finally {
       this.busy = false;
       this.updateDisplay();
@@ -209,14 +215,17 @@ export class EquilibriumEngineApp {
     this.updateDisplay();
 
     try {
-      const result = await this.rgs.play(this.selectedBet, 'base');
+      const result = await this.playOrRecover();
       this.balance = result.balance.amount;
+      const state = readRoundState(result.round);
 
-      await this.replayRound(result.round.state);
-      this.lastBookState = result.round.state;
-      this.hasFinishedBook = true;
-      const endResult = await this.rgs.endRound();
-      this.balance = endResult.balance.amount;
+      try {
+        await this.replayRound(state);
+        this.lastBookState = state;
+        this.hasFinishedBook = true;
+      } finally {
+        await this.closeRoundIfNeeded(result.round.active);
+      }
     } catch (error) {
       this.showError(this.mapError(error));
     } finally {
@@ -244,6 +253,33 @@ export class EquilibriumEngineApp {
     } finally {
       this.busy = false;
       this.updateDisplay();
+    }
+  }
+
+  private async playOrRecover(): Promise<{
+    balance: { amount: number };
+    round: { active: boolean; state: BookEvent[]; payoutMultiplier: number };
+  }> {
+    try {
+      return await this.rgs.play(this.selectedBet, 'base');
+    } catch (error) {
+      if (!isStuckRoundError(error)) throw error;
+      try {
+        await this.rgs.endRound();
+      } catch (endError) {
+        if (!isNoActiveRoundError(endError)) throw error;
+      }
+      return this.rgs.play(this.selectedBet, 'base');
+    }
+  }
+
+  private async closeRoundIfNeeded(active: boolean): Promise<void> {
+    if (!active) return;
+    try {
+      const endResult = await this.rgs.endRound();
+      this.balance = endResult.balance.amount;
+    } catch (error) {
+      if (!isNoActiveRoundError(error)) throw error;
     }
   }
 
@@ -289,9 +325,12 @@ export class EquilibriumEngineApp {
   }
 
   private mapError(error: unknown): string {
-    const text = error instanceof Error ? error.message : String(error);
+    const text = rgsErrorText(error);
     if (/insufficient/i.test(text)) return 'Insufficient balance.';
     if (/invalid session/i.test(text)) return 'Invalid session.';
+    if (isStuckRoundError(error)) {
+      return 'The last round was still open. Press Play again.';
+    }
     if (error instanceof TypeError) {
       return 'Network error. Please reload the game.';
     }

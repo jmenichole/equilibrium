@@ -29,6 +29,25 @@ export type RgsApi = {
   endRound(): Promise<{ balance: { amount: number } }>;
 };
 
+function formatRgsFailure(raw: string, status: number): string {
+  try {
+    const parsed = JSON.parse(raw) as {
+      error?: unknown;
+      message?: unknown;
+      status?: { statusCode?: unknown; message?: unknown };
+    };
+    return String(
+      parsed.status?.message ??
+        parsed.message ??
+        parsed.error ??
+        parsed.status?.statusCode ??
+        raw,
+    );
+  } catch {
+    return raw || `RGS request failed (${status})`;
+  }
+}
+
 async function postJson<T>(
   baseUrl: string,
   path: string,
@@ -41,7 +60,7 @@ async function postJson<T>(
     body: JSON.stringify({ sessionID, ...body }),
   });
   if (!response.ok) {
-    throw new Error(await response.text());
+    throw new Error(formatRgsFailure(await response.text(), response.status));
   }
   return response.json() as Promise<T>;
 }

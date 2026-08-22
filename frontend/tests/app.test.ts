@@ -102,6 +102,57 @@ test('info panel lists rules, RTP, and max win', async () => {
   expect(panel?.textContent).toMatch(/bust/i);
 });
 
+test('does not call endRound when play returns an already-closed round', async () => {
+  const rgs = createFakeRgs();
+  rgs.play = vi.fn(async () => ({
+    balance: { amount: 999_000_000 },
+    round: {
+      active: false,
+      state: PEBBLE_WIN_EVENTS,
+      payoutMultiplier: 104,
+    },
+  }));
+  const app = new EquilibriumEngineApp(document.getElementById('app')!, rgs, 0);
+  await app.mount();
+
+  (document.getElementById('btn-play') as HTMLButtonElement).click();
+  await vi.waitFor(() => {
+    expect(document.getElementById('hint')?.textContent).toContain('1.04');
+  });
+
+  expect(rgs.endRound).not.toHaveBeenCalled();
+  expect(document.getElementById('error')?.textContent).toBe('');
+});
+
+test('play retries after a stuck active-round error', async () => {
+  const rgs = createFakeRgs();
+  rgs.play = vi
+    .fn()
+    .mockRejectedValueOnce(
+      new Error('A round is already active, please call EndRound() before starting a new round'),
+    )
+    .mockResolvedValueOnce({
+      balance: { amount: 999_000_000 },
+      round: {
+        active: true,
+        state: PEBBLE_WIN_EVENTS,
+        payoutMultiplier: 104,
+      },
+    });
+
+  const app = new EquilibriumEngineApp(document.getElementById('app')!, rgs, 0);
+  await app.mount();
+
+  (document.getElementById('btn-play') as HTMLButtonElement).click();
+  await vi.waitFor(() => {
+    expect(rgs.play).toHaveBeenCalledTimes(2);
+    expect(document.getElementById('hint')?.textContent).toContain('1.04');
+  });
+
+  expect(rgs.endRound).toHaveBeenCalled();
+  expect(document.getElementById('error')?.textContent).toBe('');
+});
+
 test('sound button toggles muted state', async () => {
   const rgs = createFakeRgs();
   const app = new EquilibriumEngineApp(document.getElementById('app')!, rgs, 0);
