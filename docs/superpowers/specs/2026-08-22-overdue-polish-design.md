@@ -16,8 +16,10 @@ Make Overdue read as a finished original: a **pile of books on a shelf** that ei
 **Success**
 
 - Pile grows on a still shelf; last book is thin, regular, or tome (visual size only)
+- Warm **library wall** behind the shelf (SVG/CSS in the static build; no remote fonts or images)
 - Bust: books collapse; shelf does not tip; hero `×0.00`; win amount `0`
 - Win: pile steadies, gold glow, hero `×` holds; RGS win amount shown
+- **SFX** bundled in `dist`: land, tumble, win chime. Mute silences them. No looping music this round.
 - Medium pace (readable land, then outcome)
 - Single `base` mode; no difficulty; no extra multiplier tables
 - Lookup weights retuned so Engine math summary RTP is **96.5%** (±0.5% band)
@@ -34,12 +36,13 @@ Make Overdue read as a finished original: a **pile of books on a shelf** that ei
 - Second bet mode or “difficulty”
 - Raising max win or lowering hit-rate
 - Stake.US `us_` template this round
-- Painted illustration pack; SVG pile is enough
+- Unique painted illustration pack or licensed stock art
+- Looping music / voiceover
 - Human ACP click-submit (Jamie)
 
 ## Player fantasy
 
-A wooden shelf. Books land into a **pile**. Any size can be too much. If the pile holds, it glows gold and you are paid the `×` you saw. If it falls, the books go and the bet is gone. You only press Play.
+A wooden shelf against a warm library wall. Books land into a **pile** (soft land sound). Any size can be too much. If the pile holds, it glows gold, a short win chime plays, and you are paid the `×` you saw. If it falls, the books go (tumble sound) and the bet is gone. You only press Play. Mute turns all of that off.
 
 ## Round
 
@@ -49,11 +52,11 @@ Visual mapping:
 
 | Event | Look |
 | --- | --- |
-| `stack` | One book drops onto the pile (height/width from `weight` 1 / 3 / 7, no numerals). Hero `×` from that event’s `payoutMultiplier`. |
-| `bust` | Pile topples. Shelf stays. `×0.00`. |
-| `setTotalWin` / `finalWin` | Show RGS `amount`. Win: gold hold. Bust: stay collapsed. |
+| `stack` | One book drops onto the pile (height/width from `weight` 1 / 3 / 7, no numerals). Land SFX. Hero `×` from that event’s `payoutMultiplier`. |
+| `bust` | Pile topples. Shelf stays. Tumble SFX. `×0.00`. |
+| `setTotalWin` / `finalWin` | Show RGS `amount`. Win: gold hold + win chime (skip chime on `0`). Bust: stay collapsed. |
 
-Pace: medium. Spacebar = Play. Mute in UI.
+Pace: medium. Spacebar = Play. Mute in UI actually stops SFX (Web Audio or short bundled files under `frontend/public/sfx/`, copied into `dist`). No external URLs.
 
 ## Math
 
@@ -63,6 +66,7 @@ Advertised rules: **RTP 96.5%**, **max win ×15.05** (or the new library’s tru
 
 ## Screen
 
+- Full-view **library background** (warm plaster/wood wall, soft light). Not a flat `#1c1814` void.
 - Header: balance, bet, Play, sound, info
 - Center: hero `×`, shelf + **vertical pile**
 - Win line under the shelf
@@ -80,7 +84,7 @@ Do not submit for approval until this polish is on Engine (math 96.5% + new `dis
 
 ## Architecture
 
-No new packages. `math/equilibrium/publish.py` target RTP 0.965. `frontend` shelf view = pile + collapse + gold win; replay timing medium. Tests: pile grows with stacks; bust class without shelf-tip as the lose; win glow class; weights still hit 96.0–97.0% RTP; `C`/`S` absent from DOM.
+No new runtime packages required (Web Audio or `<audio>` is enough). `math/equilibrium/publish.py` target RTP 0.965. `frontend` shelf view = pile + collapse + gold win on a library backdrop; replay timing medium; SFX hooked to events and gated by mute. Tests: pile grows with stacks; bust class without shelf-tip as the lose; win glow class; mute prevents audio; weights still hit 96.0–97.0% RTP; `C`/`S` absent from DOM.
 
 ## Human upload
 
