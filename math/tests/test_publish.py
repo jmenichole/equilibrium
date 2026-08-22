@@ -3,6 +3,8 @@ import csv
 import json
 from pathlib import Path
 
+import pytest
+
 from equilibrium.publish import write_library
 from equilibrium.simulate import simulate_round
 

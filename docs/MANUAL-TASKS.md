@@ -42,8 +42,10 @@ Uploads are **not in git**. After you clone and build, they live under the repo 
 | Math | `math/library/publish_files/` | `cd math && python3 generate.py --count 100000 --out library` |
 | Frontend | `frontend/dist/` | `cd frontend && npm run build` |
 
+Engine LUT CSV must be headerless `id,weight,payout` integers. If generate already finished, strip line 1 of `lookUpTable_base_0.csv` instead of re-simulating. Do not upload math source — only the `publish_files` folder. Frontend `dist/` can stay if already uploaded.
+
 - [ ] Create a studio game on engine.stake.com
-- [ ] Upload `math/library/publish_files/` and `frontend/dist/`
+- [ ] Re-import `math/library/publish_files/` (`index.json`, headerless `lookUpTable_base_0.csv`, `books_base.jsonl.zst`) and publish math again
 - [ ] Tile in the Tile Editor (bright edges, no baked multipliers)
 - [ ] Request approval; do not promise listing
 

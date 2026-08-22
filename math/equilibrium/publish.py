@@ -103,21 +103,30 @@ def write_library(
     books_dir.mkdir(parents=True, exist_ok=True)
     pub.mkdir(parents=True, exist_ok=True)
     (books_dir / "books_base.json").write_text(json.dumps(numbered))
-    with (pub / "books_base.jsonl").open("w") as fh:
-        for row in numbered:
-            fh.write(json.dumps(row) + "\n")
+    jsonl = "".join(json.dumps(row) + "\n" for row in numbered)
+    (pub / "books_base.jsonl").write_text(jsonl, encoding="utf-8", newline="\n")
+    events_name = "books_base.jsonl"
+    try:
+        import zstandard
+    except ImportError:
+        zstandard = None
+    if zstandard is not None:
+        (pub / "books_base.jsonl.zst").write_bytes(
+            zstandard.ZstdCompressor().compress(jsonl.encode("utf-8"))
+        )
+        events_name = "books_base.jsonl.zst"
     with (pub / "lookUpTable_base_0.csv").open("w", encoding="utf-8", newline="\n") as fh:
         for i, row in enumerate(numbered):
             weight = weights[i] if weights is not None else 1
-            fh.write(f"{row['id']},{weight},{row['payoutMultiplier']}\n")
+            fh.write("{},{},{}\n".format(row["id"], weight, row["payoutMultiplier"]))
     (pub / "index.json").write_text(
         json.dumps(
             {
                 "modes": [
                     {
                         "name": "base",
-                        "cost": 1,
-                        "events": "books_base.jsonl",
+                        "cost": 1.0,
+                        "events": events_name,
                         "weights": "lookUpTable_base_0.csv",
                     }
                 ]
