@@ -39,15 +39,15 @@ Uploads are **not in git**. After you clone and build, they live under the repo 
 
 | Upload | Local path (from repo root) | Create with |
 | --- | --- | --- |
-| Math | `math/library/publish_files/` | `cd math && python3 generate.py --count 100000 --out library` |
+| Math | `math/library/publish_files/` | `cd math && python3 generate.py --count 100000 --out library` (96.5% weights) |
 | Frontend | `frontend/dist/` | `cd frontend && npm run build` |
+| Tile | `docs/assets/overdue-tile.png` | bright edges, no baked × |
 
-Engine LUT CSV must be headerless `id,weight,payout` integers. If generate already finished, strip line 1 of `lookUpTable_base_0.csv` instead of re-simulating. Do not upload math source — only the `publish_files` folder. Frontend `dist/` can stay if already uploaded.
-
-- [ ] Create a studio game on engine.stake.com
-- [ ] Re-import `math/library/publish_files/` (`index.json`, headerless `lookUpTable_base_0.csv`, `books_base.jsonl.zst`) and publish math again
-- [ ] Tile in the Tile Editor (bright edges, no baked multipliers)
-- [ ] Request approval; do not promise listing
+- [ ] Re-import math `publish_files` after generate; confirm Engine math page ~96.5% RTP
+- [ ] Re-import entire `frontend/dist` (new hashed JS/CSS)
+- [ ] Replace game tile with `docs/assets/overdue-tile.png`
+- [ ] Play: pile grows, gold hold on win, books collapse on bust, mute silences tones
+- [ ] Then Start Approval (math + frontend). Do not promise listing.
 
 ### Optional
 
