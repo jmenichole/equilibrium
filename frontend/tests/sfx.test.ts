@@ -19,7 +19,7 @@ function fakeCtx() {
 
 test('play starts an oscillator when not muted', () => {
   const ctx = fakeCtx();
-  const sfx = createSfx(ctx);
+  const sfx = createSfx(ctx as never);
   sfx.play('land');
   expect(ctx.createOscillator).toHaveBeenCalledOnce();
   expect(ctx.osc.start).toHaveBeenCalledOnce();
@@ -27,7 +27,7 @@ test('play starts an oscillator when not muted', () => {
 
 test('muted play does not start an oscillator', () => {
   const ctx = fakeCtx();
-  const sfx = createSfx(ctx);
+  const sfx = createSfx(ctx as never);
   sfx.muted = true;
   sfx.play('tumble');
   sfx.play('win');
