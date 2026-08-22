@@ -17,7 +17,7 @@ import {
 import { readRoundState } from '../rgs/round';
 import type { BookEvent } from '../rgs/types';
 import { playBookEvents } from './replay';
-import { createSfx } from './sfx';
+import { createSfx, type SfxPlayer } from './sfx';
 import { ShelfView } from './shelfView';
 
 const BET_STORAGE_KEY = 'equilibrium.bet';
@@ -28,7 +28,7 @@ export class EquilibriumEngineApp {
   private betLevels: number[] = [];
   private selectedBet = 0;
   private muted = false;
-  private sfx = createSfx();
+  private sfx: SfxPlayer;
   private infoOpen = false;
   private shelfView: ShelfView | null = null;
   private pieces: { weight: number }[] = [];
@@ -44,7 +44,10 @@ export class EquilibriumEngineApp {
     private readonly root: HTMLElement,
     private readonly rgs: RgsApi,
     private readonly delayMs = 380,
-  ) {}
+    sfx?: SfxPlayer,
+  ) {
+    this.sfx = sfx ?? createSfx();
+  }
 
   async mount(): Promise<void> {
     try {
@@ -98,6 +101,7 @@ export class EquilibriumEngineApp {
 
     this.root.innerHTML = `
       <main class="equilibrium-app">
+        <h1 id="game-title">${GAME_TITLE}</h1>
         <div id="balance" aria-live="polite"></div>
         <label for="bet">Bet</label>
         <select id="bet"></select>
@@ -183,6 +187,7 @@ export class EquilibriumEngineApp {
 
     const soundBtn = this.root.querySelector('#btn-sound') as HTMLButtonElement;
     soundBtn.addEventListener('click', () => {
+      this.sfx.resume();
       this.muted = !this.muted;
       this.sfx.muted = this.muted;
       this.updateDisplay();
@@ -208,6 +213,7 @@ export class EquilibriumEngineApp {
 
   private async onPlay(): Promise<void> {
     if (this.busy) return;
+    this.sfx.resume();
     this.busy = true;
     this.hintText = '×1.00';
     this.winText = '';
@@ -239,6 +245,7 @@ export class EquilibriumEngineApp {
 
   private async onReplayLast(): Promise<void> {
     if (this.busy || !this.lastBookState) return;
+    this.sfx.resume();
 
     this.busy = true;
     this.hintText = '×1.00';

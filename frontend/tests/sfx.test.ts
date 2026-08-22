@@ -5,13 +5,24 @@ import { expect, test, vi } from 'vitest';
 import { createSfx } from '../src/game/sfx';
 
 function fakeCtx() {
-  const osc = { connect: vi.fn(), start: vi.fn(), stop: vi.fn(), frequency: { value: 0 }, type: 'sine' };
-  const gain = { connect: vi.fn(), gain: { setValueAtTime: vi.fn(), exponentialRampToValueAtTime: vi.fn() } };
+  const osc = {
+    connect: vi.fn(),
+    start: vi.fn(),
+    stop: vi.fn(),
+    frequency: { value: 0 },
+    type: 'sine',
+  };
+  const gain = {
+    connect: vi.fn(),
+    gain: { setValueAtTime: vi.fn(), exponentialRampToValueAtTime: vi.fn() },
+  };
   return {
     createOscillator: vi.fn(() => osc),
     createGain: vi.fn(() => gain),
     destination: {},
     currentTime: 0,
+    state: 'running' as AudioContext['state'],
+    resume: vi.fn(async () => undefined),
     osc,
     gain,
   };
@@ -19,7 +30,7 @@ function fakeCtx() {
 
 test('play starts an oscillator when not muted', () => {
   const ctx = fakeCtx();
-  const sfx = createSfx(ctx as never);
+  const sfx = createSfx(ctx);
   sfx.play('land');
   expect(ctx.createOscillator).toHaveBeenCalledOnce();
   expect(ctx.osc.start).toHaveBeenCalledOnce();
@@ -27,9 +38,30 @@ test('play starts an oscillator when not muted', () => {
 
 test('muted play does not start an oscillator', () => {
   const ctx = fakeCtx();
-  const sfx = createSfx(ctx as never);
+  const sfx = createSfx(ctx);
   sfx.muted = true;
   sfx.play('tumble');
   sfx.play('win');
   expect(ctx.createOscillator).not.toHaveBeenCalled();
+});
+
+test('play no-ops while context is suspended', () => {
+  const ctx = fakeCtx();
+  ctx.state = 'suspended';
+  const sfx = createSfx(ctx);
+  sfx.play('land');
+  expect(ctx.createOscillator).not.toHaveBeenCalled();
+});
+
+test('resume unlocks a suspended context', () => {
+  const ctx = fakeCtx();
+  ctx.state = 'suspended';
+  ctx.resume = vi.fn(async () => {
+    ctx.state = 'running';
+  });
+  const sfx = createSfx(ctx);
+  sfx.resume();
+  expect(ctx.resume).toHaveBeenCalledOnce();
+  sfx.play('win');
+  expect(ctx.createOscillator).toHaveBeenCalledOnce();
 });

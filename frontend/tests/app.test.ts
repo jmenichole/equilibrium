@@ -166,3 +166,38 @@ test('sound button toggles muted state', async () => {
   expect(btn.getAttribute('aria-pressed')).toBe('true');
   expect(btn.classList.contains('muted')).toBe(true);
 });
+
+test('play click resumes audio before calling RGS', async () => {
+  const rgs = createFakeRgs();
+  const sfx = { muted: false, play: vi.fn(), resume: vi.fn() };
+  const app = new EquilibriumEngineApp(
+    document.getElementById('app')!,
+    rgs,
+    0,
+    sfx,
+  );
+  await app.mount();
+
+  expect(document.getElementById('game-title')?.textContent).toBe('Overdue');
+  (document.getElementById('btn-play') as HTMLButtonElement).click();
+  expect(sfx.resume).toHaveBeenCalled();
+  await vi.waitFor(() => {
+    expect(rgs.play).toHaveBeenCalledOnce();
+  });
+});
+
+test('sound button resumes audio context', async () => {
+  const rgs = createFakeRgs();
+  const sfx = { muted: false, play: vi.fn(), resume: vi.fn() };
+  const app = new EquilibriumEngineApp(
+    document.getElementById('app')!,
+    rgs,
+    0,
+    sfx,
+  );
+  await app.mount();
+
+  (document.getElementById('btn-sound') as HTMLButtonElement).click();
+  expect(sfx.resume).toHaveBeenCalledOnce();
+  expect(sfx.muted).toBe(true);
+});

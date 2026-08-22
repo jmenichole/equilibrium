@@ -30,10 +30,18 @@ body {
   opacity: 0.9;
 }
 
+#game-title {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #2a231c;
+  letter-spacing: 0.04em;
+}
+
 #hint {
   font-size: 2.4rem;
   font-weight: 700;
-  color: #c8a84e;
+  color: #2a231c;
   text-align: center;
   letter-spacing: 0.02em;
 }
@@ -111,7 +119,7 @@ body {
 }
 
 #error {
-  color: #e8a0a0;
+  color: #7a1a1a;
   font-size: 0.875rem;
 }
 
@@ -128,4 +136,10 @@ body {
   border-radius: 0.5rem;
   padding: 0.75rem;
   background: #2a231c;
+  color: #e8dcc8;
+}
+
+#info-panel h2 {
+  margin-top: 0;
+  color: #e8d9a8;
 }

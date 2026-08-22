@@ -71,6 +71,12 @@ test('books stack upward as a pile not a row', () => {
   const y0 = Number(books[0].getAttribute('y'));
   const y1 = Number(books[1].getAttribute('y'));
   expect(y1).toBeLessThan(y0);
+  const mid = (el: Element) =>
+    Number(el.getAttribute('x')) + Number(el.getAttribute('width')) / 2;
+  expect(mid(books[0])).toBe(180);
+  expect(mid(books[1])).toBe(180);
+  expect(host.querySelector('.library-wall')).not.toBeNull();
+  expect(host.querySelector('.pile')).not.toBeNull();
 });
 
 test('bust does not rotate the shelf board', () => {
