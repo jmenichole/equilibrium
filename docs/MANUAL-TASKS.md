@@ -25,7 +25,7 @@ Live demo: https://jmenichole.github.io/equilibrium/
 
 ### Pitch hygiene
 
-- [ ] Keep the footer in screenshots: `Pitch demo — not on Stake/Bink. © 2026 jmenichole.`
+- [ ] Crop the footer out of screenshots (do not show `Pitch demo — not on Stake/Bink. © 2026 jmenichole.`)
 - [ ] Say out loud: refresh resets the demo (no resume); math is in-process JS, not a live RGS
 - [ ] Do not promise Stake.us or Bink listing from this build
 
