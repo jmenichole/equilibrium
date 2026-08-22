@@ -4,58 +4,98 @@
 
 :root {
   color-scheme: light;
-  font-family: system-ui, sans-serif;
-  background: #c4b49a;
+  font-family: Georgia, 'Times New Roman', serif;
+  background: #1c1814;
   color: #2a231c;
 }
 
-body {
+html,
+body,
+#app {
   margin: 0;
-  min-height: 100vh;
-  background: #c4b49a;
+  height: 100%;
+  background: #1c1814;
+}
+
+body {
+  min-height: 100%;
 }
 
 .equilibrium-app {
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  gap: 0.65rem;
+  gap: 0.55rem;
+  width: 100%;
   max-width: 26rem;
+  min-height: 100%;
   margin: 0 auto;
-  padding: 0.85rem;
-  background: #c4b49a;
+  padding: 0.75rem 0.85rem 1rem;
+  background:
+    radial-gradient(ellipse at 50% 0%, #d7c4a4 0%, #c4b49a 55%, #a89274 100%);
 }
 
-#balance {
-  font-size: 0.95rem;
-  opacity: 0.9;
+.top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.75rem;
 }
 
 #game-title {
   margin: 0;
-  font-size: 1.15rem;
+  font-size: 1.35rem;
   font-weight: 700;
   color: #2a231c;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.08em;
+}
+
+#balance {
+  font-size: 0.95rem;
+  font-family: system-ui, sans-serif;
+  opacity: 0.92;
+}
+
+.bet-row {
+  display: grid;
+  grid-template-columns: 7.5rem 1fr;
+  gap: 0.5rem;
+  align-items: end;
+}
+
+.bet-row label {
+  display: block;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 0.2rem;
 }
 
 #hint {
-  font-size: 2.4rem;
+  font-size: 2.15rem;
   font-weight: 700;
+  font-family: system-ui, sans-serif;
   color: #2a231c;
   text-align: center;
   letter-spacing: 0.02em;
+  line-height: 1.1;
 }
 
 #win {
-  font-size: 1.25rem;
+  font-size: 1.05rem;
+  font-family: system-ui, sans-serif;
   text-align: center;
-  min-height: 1.4em;
+  min-height: 1.2em;
 }
 
 #shelf-slot {
-  border-radius: 0.75rem;
+  flex: 1 1 auto;
+  border-radius: 0.85rem;
   overflow: hidden;
-  box-shadow: inset 0 0 0 1px #3d3428;
+  box-shadow:
+    0 10px 24px rgba(28, 24, 20, 0.28),
+    inset 0 0 0 1px #3d3428;
+  background: #cbb79a;
 }
 
 #shelf-slot svg {
@@ -84,7 +124,7 @@ body {
 }
 
 .equilibrium-shelf.is-win .pile {
-  filter: drop-shadow(0 0 8px #c8a84e);
+  filter: drop-shadow(0 0 10px #c8a84e);
 }
 
 @keyframes book-tumble {
@@ -94,15 +134,20 @@ body {
   }
 }
 
+button {
+  font-family: Georgia, 'Times New Roman', serif;
+  cursor: pointer;
+}
+
 #btn-play {
-  font-size: 1.1rem;
-  padding: 0.7rem 1rem;
-  border: 0;
+  font-size: 1.15rem;
+  padding: 0.72rem 1rem;
+  border: 1px solid #8a6e2e;
   border-radius: 0.5rem;
-  background: #c8a84e;
+  background: linear-gradient(#e0c36a, #c8a84e);
   color: #1c1814;
   font-weight: 700;
-  cursor: pointer;
+  letter-spacing: 0.04em;
 }
 
 #btn-play:disabled {
@@ -111,24 +156,45 @@ body {
 }
 
 #bet {
+  width: 100%;
+  box-sizing: border-box;
   background: #2a231c;
   color: #e8dcc8;
   border: 1px solid #3d3428;
   border-radius: 0.4rem;
-  padding: 0.4rem;
+  padding: 0.55rem 0.45rem;
+  font-family: system-ui, sans-serif;
 }
 
 #error {
   color: #7a1a1a;
   font-size: 0.875rem;
+  font-family: system-ui, sans-serif;
 }
 
 #error:empty {
   display: none;
 }
 
+.toolbar {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+#btn-sound,
+#btn-info,
+#btn-replay {
+  background: #3d2e22;
+  color: #e8dcc8;
+  border: 1px solid #c8a84e;
+  border-radius: 0.45rem;
+  padding: 0.55rem 0.8rem;
+  font-weight: 600;
+}
+
 #btn-sound.muted {
-  opacity: 0.6;
+  opacity: 0.55;
 }
 
 #info-panel {
@@ -137,9 +203,17 @@ body {
   padding: 0.75rem;
   background: #2a231c;
   color: #e8dcc8;
+  font-family: system-ui, sans-serif;
+  font-size: 0.92rem;
 }
 
 #info-panel h2 {
   margin-top: 0;
   color: #e8d9a8;
+  font-family: Georgia, 'Times New Roman', serif;
+}
+
+#btn-replay {
+  width: 100%;
+  margin-top: 0.35rem;
 }

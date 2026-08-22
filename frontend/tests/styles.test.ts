@@ -17,3 +17,10 @@ test('library theme keeps readable ink and cream contrast', () => {
   expect(css).toMatch(/#info-panel\s*\{[^}]*color:\s*#e8dcc8/s);
   expect(css).not.toMatch(/#hint\s*\{[^}]*color:\s*#c8a84e/s);
 });
+
+test('chrome buttons share the library gold-on-wood look', () => {
+  expect(css).toMatch(/#btn-sound,\s*#btn-info,\s*#btn-replay\s*\{/s);
+  expect(css).toContain('background: #3d2e22');
+  expect(css).toContain('.toolbar');
+  expect(css).toContain('.bet-row');
+});
