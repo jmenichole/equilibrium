@@ -17,6 +17,7 @@ import {
 import { readRoundState } from '../rgs/round';
 import type { BookEvent } from '../rgs/types';
 import { playBookEvents } from './replay';
+import { createSfx } from './sfx';
 import { ShelfView } from './shelfView';
 
 const BET_STORAGE_KEY = 'equilibrium.bet';
@@ -27,6 +28,7 @@ export class EquilibriumEngineApp {
   private betLevels: number[] = [];
   private selectedBet = 0;
   private muted = false;
+  private sfx = createSfx();
   private infoOpen = false;
   private shelfView: ShelfView | null = null;
   private pieces: { weight: number }[] = [];
@@ -182,6 +184,7 @@ export class EquilibriumEngineApp {
     const soundBtn = this.root.querySelector('#btn-sound') as HTMLButtonElement;
     soundBtn.addEventListener('click', () => {
       this.muted = !this.muted;
+      this.sfx.muted = this.muted;
       this.updateDisplay();
     });
 
@@ -292,11 +295,13 @@ export class EquilibriumEngineApp {
           this.totalWeight = event.totalWeight;
           this.hintText = `×${displayPayoutX(event.payoutMultiplier)}`;
           this.phase = 'playing';
+          this.sfx.play('land');
           this.updateDisplay();
         },
         bust: () => {
           this.hintText = '×0.00';
           this.phase = 'bust';
+          this.sfx.play('tumble');
           this.updateDisplay();
         },
         setTotalWin: (event) => {
@@ -306,6 +311,7 @@ export class EquilibriumEngineApp {
         finalWin: () => {
           if (this.phase !== 'bust') {
             this.phase = 'win';
+            this.sfx.play('win');
           }
           this.updateDisplay();
         },
