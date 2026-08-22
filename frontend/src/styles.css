@@ -3,15 +3,16 @@
  */
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
   font-family: system-ui, sans-serif;
-  background: #1c1814;
-  color: #e8dcc8;
+  background: #c4b49a;
+  color: #2a231c;
 }
 
 body {
   margin: 0;
   min-height: 100vh;
+  background: #c4b49a;
 }
 
 .equilibrium-app {
@@ -21,6 +22,7 @@ body {
   max-width: 26rem;
   margin: 0 auto;
   padding: 0.85rem;
+  background: #c4b49a;
 }
 
 #balance {
@@ -60,7 +62,7 @@ body {
 
 @keyframes book-land {
   from {
-    transform: translateY(-36px);
+    transform: translateY(-24px);
     opacity: 0.2;
   }
   to {
@@ -69,22 +71,12 @@ body {
   }
 }
 
-.equilibrium-shelf.is-bust .shelf-tilt {
-  animation: shelf-fall 0.7s ease-in forwards;
-}
-
 .equilibrium-shelf.is-bust .book-wrap {
   animation: book-tumble 0.75s ease-in forwards;
 }
 
-.equilibrium-shelf.is-win .shelf-board {
+.equilibrium-shelf.is-win .pile {
   filter: drop-shadow(0 0 8px #c8a84e);
-}
-
-@keyframes shelf-fall {
-  to {
-    transform: rotate(26deg) translate(18px, 70px);
-  }
 }
 
 @keyframes book-tumble {

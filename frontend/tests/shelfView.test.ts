@@ -58,3 +58,27 @@ test('bust and win phases add state classes', () => {
   view.render({ pieces: [{ weight: 1 }], phase: 'win', totalWeight: 1 });
   expect(host.querySelector('svg')?.classList.contains('is-win')).toBe(true);
 });
+
+test('books stack upward as a pile not a row', () => {
+  const host = document.createElement('div');
+  const view = new ShelfView(host);
+  view.render({
+    pieces: [{ weight: 1 }, { weight: 3 }],
+    phase: 'playing',
+    totalWeight: 4,
+  });
+  const books = [...host.querySelectorAll('rect.book')];
+  const y0 = Number(books[0].getAttribute('y'));
+  const y1 = Number(books[1].getAttribute('y'));
+  expect(y1).toBeLessThan(y0);
+});
+
+test('bust does not rotate the shelf board', () => {
+  const host = document.createElement('div');
+  const view = new ShelfView(host);
+  view.render({ pieces: [{ weight: 7 }], phase: 'bust', totalWeight: 7 });
+  expect(host.querySelector('svg')?.classList.contains('is-bust')).toBe(true);
+  expect(host.querySelector('.shelf-tilt')).toBeNull();
+  expect(host.innerHTML).not.toMatch(/\bC\b/);
+  expect(host.innerHTML).not.toContain(' / 15');
+});
