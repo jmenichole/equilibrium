@@ -101,17 +101,25 @@ export class EquilibriumEngineApp {
 
     this.root.innerHTML = `
       <main class="equilibrium-app">
-        <h1 id="game-title">${GAME_TITLE}</h1>
-        <div id="balance" aria-live="polite"></div>
-        <label for="bet">Bet</label>
-        <select id="bet"></select>
-        <button type="button" id="btn-play">Play</button>
+        <div class="top-row">
+          <h1 id="game-title">${GAME_TITLE}</h1>
+          <div id="balance" aria-live="polite"></div>
+        </div>
+        <div class="bet-row">
+          <div>
+            <label for="bet">Bet</label>
+            <select id="bet"></select>
+          </div>
+          <button type="button" id="btn-play">Play</button>
+        </div>
         <div id="hint" aria-live="polite"></div>
         <div id="error" aria-live="polite"></div>
         <div id="shelf-slot"></div>
         <div id="win" aria-live="polite"></div>
-        <button type="button" id="btn-sound" aria-pressed="false">Sound</button>
-        <button type="button" id="btn-info">Info</button>
+        <div class="toolbar">
+          <button type="button" id="btn-sound" aria-pressed="false">Sound</button>
+          <button type="button" id="btn-info">Info</button>
+        </div>
         <div id="info-panel" hidden>
           <h2>Rules</h2>
           <p>Press Play and watch books pile on the shelf. Thin, regular, and tome sizes are visual only. If the pile falls, you lose. Wins pay the multiplier shown (×).</p>

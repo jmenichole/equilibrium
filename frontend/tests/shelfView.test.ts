@@ -14,7 +14,8 @@ test('render one weight-7 piece produces SVG with book rect', () => {
 
   const rect = host.querySelector('rect.book');
   expect(rect).not.toBeNull();
-  expect(rect?.getAttribute('height')).toBe('70');
+  expect(rect?.getAttribute('height')).toBe('24');
+  expect(Number(rect?.getAttribute('width'))).toBeGreaterThan(100);
 });
 
 test('innerHTML does not expose C or / 15 HUD strings', () => {
@@ -77,6 +78,10 @@ test('books stack upward as a pile not a row', () => {
   expect(mid(books[1])).toBe(180);
   expect(host.querySelector('.library-wall')).not.toBeNull();
   expect(host.querySelector('.pile')).not.toBeNull();
+  expect(host.querySelector('.scenery')).not.toBeNull();
+  expect(Number(books[0].getAttribute('width'))).toBeGreaterThan(
+    Number(books[0].getAttribute('height')),
+  );
 });
 
 test('bust does not rotate the shelf board', () => {

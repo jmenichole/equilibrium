@@ -44,7 +44,7 @@ Uploads are **not in git**. After you clone and build, they live under the repo 
 | Tile | `docs/assets/overdue-tile.png` | bright edges, no baked × |
 
 - [ ] Re-import math `publish_files` after generate; confirm Engine math page ~96.5% RTP
-- [ ] Re-import entire `frontend/dist` (new hashed JS/CSS)
+- [ ] Re-import entire `frontend/dist` (new hashed JS/CSS) after each frontend change
 - [ ] Replace game tile with `docs/assets/overdue-tile.png`
 - [ ] Play: pile grows, gold hold on win, books collapse on bust, mute silences tones (tap Play or Sound first so the browser allows audio)
 - [ ] Then Start Approval (math + frontend). Do not promise listing.
