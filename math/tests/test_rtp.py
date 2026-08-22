@@ -12,9 +12,9 @@ def test_compute_lookup_weights_hits_target_rtp():
     bust = simulate_round(c=0, s=1, draws=[1])
     win = simulate_round(c=15, s=1, draws=[1])
     books = [bust, win, bust, bust, win]
-    weights = compute_lookup_weights(books, target=0.96)
+    weights = compute_lookup_weights(books, target=0.965)
     r = weighted_rtp(books, weights)
-    assert 0.955 <= r <= 0.965
+    assert 0.960 <= r <= 0.970
 
 
 def test_compute_lookup_weights_finishes_on_large_far_rtp_set():

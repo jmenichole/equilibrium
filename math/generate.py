@@ -19,9 +19,9 @@ def main() -> None:
     print(f"Simulating {args.count} rounds...", flush=True)
     books = [run_round(rng) for _ in range(args.count)]
     print("Mixing book list into RTP band...", flush=True)
-    books = mix_to_band(books, target=0.96)
+    books = mix_to_band(books, target=0.965)
     print(f"Computing lookup weights for {len(books)} books...", flush=True)
-    weights = compute_lookup_weights(books, target=0.96)
+    weights = compute_lookup_weights(books, target=0.965)
     print(f"Writing library to {args.out}...", flush=True)
     write_library(args.out, books, weights)
     pub = args.out / "publish_files"
