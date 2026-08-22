@@ -108,7 +108,7 @@ export class EquilibriumEngineApp {
         <button type="button" id="btn-info">Info</button>
         <div id="info-panel" hidden>
           <h2>Rules</h2>
-          <p>Press Play and watch the shelf. If the shelf busts, you lose. Wins pay the multiplier shown (×).</p>
+          <p>Press Play and watch books pile on the shelf. Thin, regular, and tome sizes are visual only. If the pile falls, you lose. Wins pay the multiplier shown (×).</p>
           <p>RTP: ${RTP_DISPLAY}</p>
           <p>Max win: ×${MAX_WIN_X}</p>
           <p id="disclaimer"></p>

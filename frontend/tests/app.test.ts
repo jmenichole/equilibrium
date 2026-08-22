@@ -97,9 +97,11 @@ test('info panel lists rules, RTP, and max win', async () => {
 
   (document.getElementById('btn-info') as HTMLButtonElement).click();
   const panel = document.getElementById('info-panel');
-  expect(panel?.textContent).toContain('96%');
+  expect(panel?.textContent).toContain('96.5%');
   expect(panel?.textContent).toContain('15.05');
-  expect(panel?.textContent).toMatch(/bust/i);
+  expect(panel?.textContent).toMatch(/visual/i);
+  expect(panel?.textContent).toMatch(/falls/i);
+  expect(document.getElementById('disclaimer')?.textContent).toMatch(/Stake Engine/i);
 });
 
 test('does not call endRound when play returns an already-closed round', async () => {

@@ -5,11 +5,11 @@
 export const COPYRIGHT_NOTICE =
   'Copyright (c) 2026 jmenichole. All rights reserved.';
 
-export const GAME_TITLE = 'Equilibrium';
+export const GAME_TITLE = 'Overdue';
 
 export const DISCLAIMER =
-  'Malfunction voids all wins and plays. A consistent internet connection is required. In the event of a disconnection, reload the game to finish any uncompleted rounds. The expected return is calculated over many plays. The game display is not representative of any physical device and is for illustrative purposes only. Winnings are settled according to the amount received from the Remote Game Server and not from events within the web browser. Copyright (c) 2026 jmenichole. All rights reserved.';
+  'Malfunction voids all wins and plays. A consistent internet connection is required. In the event of a disconnection, reload the game to finish any uncompleted rounds. The expected return is calculated over many plays. The game display is not representative of any physical device and is for illustrative purposes only. Winnings are settled according to the amount received from the Remote Game Server and not from events within the web browser. Stake Engine™ and © Stake Engine. Copyright (c) 2026 jmenichole. All rights reserved.';
 
-export const RTP_DISPLAY = '96%';
+export const RTP_DISPLAY = '96.5%';
 
 export const MAX_WIN_X = '15.05';
