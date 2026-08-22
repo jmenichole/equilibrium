@@ -194,10 +194,3 @@ button:not(:disabled):hover {
   }
 }
 
-footer#footer {
-  margin-top: auto;
-  padding-top: 1rem;
-  font-size: 0.75rem;
-  color: var(--muted);
-  text-align: center;
-}

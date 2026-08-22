@@ -73,7 +73,6 @@ export class EquilibriumApp {
       <div id="bet-levels"></div>
       <div id="scale-slot"></div>
       <div id="blocks"></div>
-      <footer id="footer">Pitch demo — not on Stake/Bink. © 2026 jmenichole.</footer>
     `;
     const slot = this.root.querySelector('#scale-slot') as HTMLElement;
     this.scaleView = new ScaleView(slot);

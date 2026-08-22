@@ -25,7 +25,6 @@ Live demo: https://jmenichole.github.io/equilibrium/
 
 ### Pitch hygiene
 
-- [ ] Crop the footer out of screenshots (do not show `Pitch demo — not on Stake/Bink. © 2026 jmenichole.`)
 - [ ] Say out loud: refresh resets the demo (no resume); math is in-process JS, not a live RGS
 - [ ] Do not promise Stake.us or Bink listing from this build
 
@@ -36,8 +35,15 @@ Live demo: https://jmenichole.github.io/equilibrium/
 
 ### Stake Engine (human)
 
+Uploads are **not in git**. After you clone and build, they live under the repo on your machine:
+
+| Upload | Local path (from repo root) | Create with |
+| --- | --- | --- |
+| Math | `math/library/publish_files/` | `cd math && python3 generate.py --count 100000 --out library` |
+| Frontend | `frontend/dist/` | `cd frontend && npm run build` |
+
 - [ ] Create a studio game on engine.stake.com
-- [ ] Upload math `publish_files` and frontend `dist/`
+- [ ] Upload `math/library/publish_files/` and `frontend/dist/`
 - [ ] Tile in the Tile Editor (bright edges, no baked multipliers)
 - [ ] Request approval; do not promise listing
 

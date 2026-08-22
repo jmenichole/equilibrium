@@ -22,7 +22,10 @@ This writes compressed books under `library/` for local dev and publish prep.
 
 Official `publish_files` (zstd) come from the [Stake Engine math-sdk](https://github.com/StakeEngine/math-sdk): symlink or copy this game into `games/` in that repo, then run the SDK publish flow.
 
-Upload to [engine.stake.com](https://engine.stake.com) is manual: math `publish_files` plus frontend `dist/` from:
+Upload to [engine.stake.com](https://engine.stake.com) is manual. After generate + build, the folders on **your machine** (repo root) are:
+
+- Math: `math/library/publish_files/`
+- Frontend: `frontend/dist/`
 
 ```bash
 cd frontend && npm run build

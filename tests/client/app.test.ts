@@ -10,16 +10,14 @@ beforeEach(() => {
   document.body.innerHTML = '<div id="app"></div>';
 });
 
-test('shows PLAY MONEY, footer copyright, cashout disabled at start', async () => {
+test('shows PLAY MONEY, cashout disabled at start, no footer', async () => {
   const app = new EquilibriumApp(
     document.getElementById('app')!,
     new LocalGameServer({ rollC: () => 15 }),
   );
   await app.mount();
   expect(document.getElementById('play-money')?.textContent).toMatch(/PLAY MONEY/);
-  expect(document.getElementById('footer')?.textContent).toContain(
-    'Pitch demo — not on Stake/Bink. © 2026 jmenichole.',
-  );
+  expect(document.getElementById('footer')).toBeNull();
   expect((document.getElementById('btn-cashout') as HTMLButtonElement).disabled).toBe(
     true,
   );

@@ -2,7 +2,6 @@
  * Copyright (c) 2026 jmenichole. All rights reserved.
  */
 import {
-  COPYRIGHT_NOTICE,
   DISCLAIMER,
   GAME_TITLE,
   MAX_WIN_X,
@@ -109,7 +108,6 @@ export class EquilibriumEngineApp {
           <p id="disclaimer"></p>
           <button type="button" id="btn-replay" disabled>Replay last</button>
         </div>
-        <footer>${COPYRIGHT_NOTICE}</footer>
       </main>
     `;
 
