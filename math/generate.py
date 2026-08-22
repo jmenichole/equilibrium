@@ -16,10 +16,16 @@ def main() -> None:
     parser.add_argument("--out", type=Path, default=Path(__file__).parent / "library")
     args = parser.parse_args()
     rng = random.Random(args.seed)
+    print(f"Simulating {args.count} rounds...", flush=True)
     books = [run_round(rng) for _ in range(args.count)]
+    print("Mixing book list into RTP band...", flush=True)
     books = mix_to_band(books, target=0.96)
+    print(f"Computing lookup weights for {len(books)} books...", flush=True)
     weights = compute_lookup_weights(books, target=0.96)
+    print(f"Writing library to {args.out}...", flush=True)
     write_library(args.out, books, weights)
+    pub = args.out / "publish_files"
+    print(f"Done. Import this folder: {pub.resolve()}", flush=True)
 
 
 if __name__ == "__main__":

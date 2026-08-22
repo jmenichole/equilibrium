@@ -1,5 +1,6 @@
 # Copyright (c) 2026 jmenichole. All rights reserved.
 import random
+import time
 
 import pytest
 
@@ -14,6 +15,18 @@ def test_compute_lookup_weights_hits_target_rtp():
     weights = compute_lookup_weights(books, target=0.96)
     r = weighted_rtp(books, weights)
     assert 0.955 <= r <= 0.965
+
+
+def test_compute_lookup_weights_finishes_on_large_far_rtp_set():
+    # 20k books at 0.40 RTP need ~10k +1 weight steps. The old O(n) RTP
+    # scan per step hangs a laptop (same stack as generate.py --count 100000).
+    books = [{"payoutMultiplier": 0, "events": []}] * 16_000
+    books += [{"payoutMultiplier": 200, "events": []}] * 4_000
+    t0 = time.perf_counter()
+    weights = compute_lookup_weights(books, target=0.96)
+    elapsed = time.perf_counter() - t0
+    assert elapsed < 2.0
+    assert 0.955 <= weighted_rtp(books, weights) <= 0.965
 
 
 def test_mix_raises_if_still_out_of_band():

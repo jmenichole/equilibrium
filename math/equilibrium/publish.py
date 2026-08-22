@@ -30,19 +30,26 @@ def compute_lookup_weights(
     win_indices = [i for i, b in enumerate(books) if b["payoutMultiplier"] > 0]
     low, high = target - 0.005, target + 0.005
     max_iters = max(len(books) * 1000, 1)
+    total_w = float(len(books))
+    total_p = sum(b["payoutMultiplier"] / 100 for b in books)
 
     for _ in range(max_iters):
-        r = weighted_rtp(books, weights)
+        r = 0.0 if total_w == 0 else total_p / total_w
         if low <= r <= high:
             return weights
         if r < low and win_indices:
-            weights[rng.choice(win_indices)] += 1
+            i = rng.choice(win_indices)
+            weights[i] += 1
+            total_w += 1
+            total_p += books[i]["payoutMultiplier"] / 100
         elif r > high and bust_indices:
-            weights[rng.choice(bust_indices)] += 1
+            i = rng.choice(bust_indices)
+            weights[i] += 1
+            total_w += 1
         else:
             break
 
-    r = weighted_rtp(books, weights)
+    r = 0.0 if total_w == 0 else total_p / total_w
     if not (low <= r <= high):
         raise ValueError(
             f"compute_lookup_weights could not reach RTP band [{low}, {high}]; final RTP={r:.6f}"
