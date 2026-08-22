@@ -1,7 +1,6 @@
 # Copyright (c) 2026 jmenichole. All rights reserved.
 from __future__ import annotations
 
-import csv
 import json
 import random
 from pathlib import Path
@@ -107,18 +106,10 @@ def write_library(
     with (pub / "books_base.jsonl").open("w") as fh:
         for row in numbered:
             fh.write(json.dumps(row) + "\n")
-    with (pub / "lookUpTable_base_0.csv").open("w", newline="") as fh:
-        w = csv.DictWriter(fh, fieldnames=["id", "probabilityWeight", "payoutMultiplier"])
-        w.writeheader()
+    with (pub / "lookUpTable_base_0.csv").open("w", encoding="utf-8", newline="\n") as fh:
         for i, row in enumerate(numbered):
             weight = weights[i] if weights is not None else 1
-            w.writerow(
-                {
-                    "id": row["id"],
-                    "probabilityWeight": weight,
-                    "payoutMultiplier": row["payoutMultiplier"],
-                }
-            )
+            fh.write(f"{row['id']},{weight},{row['payoutMultiplier']}\n")
     (pub / "index.json").write_text(
         json.dumps(
             {

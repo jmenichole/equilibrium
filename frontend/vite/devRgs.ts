@@ -31,16 +31,17 @@ type StoredBook = {
 };
 
 export function parseLookupWeights(csv: string): number[] {
-  const lines = csv.trim().split(/\r?\n/);
-  const header = lines[0]?.split(',') ?? [];
-  const weightIndex = header.indexOf('probabilityWeight');
-  if (weightIndex < 0) {
-    throw new Error('lookUpTable CSV missing probabilityWeight column');
+  const lines = csv.trim().split(/\r?\n/).filter((line) => line.length > 0);
+  if (lines.length === 0) {
+    return [];
   }
-  return lines.slice(1).map((line) => {
-    const cols = line.split(',');
-    return Number(cols[weightIndex]);
-  });
+  const header = lines[0].split(',');
+  const namedWeight = header.indexOf('probabilityWeight');
+  if (namedWeight >= 0) {
+    return lines.slice(1).map((line) => Number(line.split(',')[namedWeight]));
+  }
+  // Official Engine LUT: id,weight,payoutMultiplier with no header.
+  return lines.map((line) => Number(line.split(',')[1]));
 }
 
 export function computeEndRoundCredit(

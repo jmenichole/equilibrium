@@ -12,6 +12,13 @@ test('parseLookupWeights reads probabilityWeight column', () => {
   expect(parseLookupWeights(csv)).toEqual([10, 90]);
 });
 
+test('parseLookupWeights reads headerless Engine lookup rows', () => {
+  const csv = `1,10,104
+2,90,0
+`;
+  expect(parseLookupWeights(csv)).toEqual([10, 90]);
+});
+
 test('computeEndRoundCredit floors bet * multiplier / 100', () => {
   expect(computeEndRoundCredit(2_000_000, 104)).toBe(2_080_000);
   expect(computeEndRoundCredit(1_000_000, 0)).toBe(0);
