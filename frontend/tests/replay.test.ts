@@ -84,3 +84,21 @@ test('playBookEvents defaults delayMs to 0 for instant tests', async () => {
 
   expect(performance.now() - start).toBeLessThan(50);
 });
+
+test('playBookEvents holds after bust so the shelf can fall', async () => {
+  const events: BookEvent[] = [{ index: 0, type: 'bust' }];
+  const start = performance.now();
+
+  await playBookEvents(
+    events,
+    {
+      stack: () => {},
+      bust: () => {},
+      setTotalWin: () => {},
+      finalWin: () => {},
+    },
+    20,
+  );
+
+  expect(performance.now() - start).toBeGreaterThanOrEqual(40);
+});

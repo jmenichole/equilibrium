@@ -17,34 +17,105 @@ body {
 .equilibrium-app {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  max-width: 24rem;
+  gap: 0.65rem;
+  max-width: 26rem;
   margin: 0 auto;
-  padding: 1rem;
+  padding: 0.85rem;
+}
+
+#balance {
+  font-size: 0.95rem;
+  opacity: 0.9;
 }
 
 #hint {
-  font-size: 2rem;
+  font-size: 2.4rem;
   font-weight: 700;
   color: #c8a84e;
+  text-align: center;
+  letter-spacing: 0.02em;
 }
 
 #win {
   font-size: 1.25rem;
+  text-align: center;
+  min-height: 1.4em;
+}
+
+#shelf-slot {
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px #3d3428;
 }
 
 #shelf-slot svg {
-  max-width: 100%;
+  display: block;
+  width: 100%;
   height: auto;
 }
 
-.equilibrium-shelf.is-bust {
-  opacity: 0.45;
-  transform: translateY(8px);
+.book-enter {
+  animation: book-land 0.38s ease-out;
 }
 
-.equilibrium-shelf.is-win {
-  opacity: 1;
+@keyframes book-land {
+  from {
+    transform: translateY(-36px);
+    opacity: 0.2;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.equilibrium-shelf.is-bust .shelf-tilt {
+  animation: shelf-fall 0.7s ease-in forwards;
+}
+
+.equilibrium-shelf.is-bust .book-wrap {
+  animation: book-tumble 0.75s ease-in forwards;
+}
+
+.equilibrium-shelf.is-win .shelf-board {
+  filter: drop-shadow(0 0 8px #c8a84e);
+}
+
+@keyframes shelf-fall {
+  to {
+    transform: rotate(26deg) translate(18px, 70px);
+  }
+}
+
+@keyframes book-tumble {
+  to {
+    transform: translateY(90px) rotate(18deg);
+    opacity: 0.15;
+  }
+}
+
+#btn-play {
+  font-size: 1.1rem;
+  padding: 0.7rem 1rem;
+  border: 0;
+  border-radius: 0.5rem;
+  background: #c8a84e;
+  color: #1c1814;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+#btn-play:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+#bet {
+  background: #2a231c;
+  color: #e8dcc8;
+  border: 1px solid #3d3428;
+  border-radius: 0.4rem;
+  padding: 0.4rem;
 }
 
 #error {
@@ -66,4 +137,3 @@ body {
   padding: 0.75rem;
   background: #2a231c;
 }
-

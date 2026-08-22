@@ -35,7 +35,7 @@ export class EquilibriumEngineApp {
   constructor(
     private readonly root: HTMLElement,
     private readonly rgs: RgsApi,
-    private readonly delayMs = 40,
+    private readonly delayMs = 380,
   ) {}
 
   async mount(): Promise<void> {

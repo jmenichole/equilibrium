@@ -24,7 +24,9 @@ export async function playBookEvents(
       if (delayMs > 0) await delay(delayMs);
       await handlers.stack(event);
     } else if (event.type === 'bust') {
+      if (delayMs > 0) await delay(delayMs);
       await handlers.bust();
+      if (delayMs > 0) await delay(delayMs);
     } else if (event.type === 'setTotalWin') {
       await handlers.setTotalWin(event);
     } else if (event.type === 'finalWin') {

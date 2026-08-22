@@ -27,6 +27,27 @@ test('innerHTML does not expose C or / 15 HUD strings', () => {
   expect(html).not.toContain(' / 15');
 });
 
+test('book widths grow with weight and last book is marked entering', () => {
+  const host = document.createElement('div');
+  const view = new ShelfView(host);
+  view.render({
+    pieces: [{ weight: 1 }, { weight: 3 }, { weight: 7 }],
+    phase: 'playing',
+    totalWeight: 11,
+  });
+
+  const books = [...host.querySelectorAll('rect.book')];
+  expect(books).toHaveLength(3);
+  expect(Number(books[0].getAttribute('width'))).toBeLessThan(
+    Number(books[1].getAttribute('width')),
+  );
+  expect(Number(books[1].getAttribute('width'))).toBeLessThan(
+    Number(books[2].getAttribute('width')),
+  );
+  expect(books[2].classList.contains('book-enter')).toBe(true);
+  expect(books[0].classList.contains('book-enter')).toBe(false);
+});
+
 test('bust and win phases add state classes', () => {
   const host = document.createElement('div');
   const view = new ShelfView(host);
